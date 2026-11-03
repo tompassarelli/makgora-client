@@ -27,8 +27,9 @@ pub fn map_version(name: &str) -> Option<MapVersion> {
         return line.next().is_none().then_some(MapVersion::Dev(build.parse().ok()?));
     }
     let mut parts = rest.split('.').map(|part| part.parse::<u32>().ok());
-    let version = MapVersion::Release(parts.next()??, parts.next()??, parts.next()??);
-    parts.next().is_none().then_some(version)
+    let (major, minor) = (parts.next()??, parts.next()??);
+    let patch = parts.next().unwrap_or(Some(0))?;
+    parts.next().is_none().then_some(MapVersion::Release(major, minor, patch))
 }
 
 fn map_title(map: &Path) -> Option<String> {
@@ -268,6 +269,15 @@ mod tests {
 
     fn setup(tools: Option<PathBuf>, in_match: bool) -> Setup {
         Setup { program: None, tools, bun: "bun".into(), windows: false, in_match }
+    }
+
+    #[test]
+    fn map_version_accepts_two_part_three_part_and_dev_names() {
+        assert_eq!(map_version("Mak'gora 0.3.w3x"), Some(MapVersion::Release(0, 3, 0)));
+        assert_eq!(map_version("Mak'gora 0.3.1.w3x"), Some(MapVersion::Release(0, 3, 1)));
+        assert_eq!(map_version("Mak'gora 0.4-dev.45.w3x"), Some(MapVersion::Dev(45)));
+        assert_eq!(map_version("Mak'gora 0.3.1.2.w3x"), None);
+        assert_eq!(map_version("Mak'gora 0.w3x"), None);
     }
 
     #[test]

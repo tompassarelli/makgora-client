@@ -10,7 +10,7 @@ use std::time::Duration;
 
 use crate::env::Env;
 
-const MAPS_SUBFOLDER: &str = "00-Smashcraft";
+const MAPS_SUBFOLDER: &str = "00-Makgora";
 const RETAIL_EXE: &str = "Warcraft III/_retail_/x86_64/Warcraft III.exe";
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -20,7 +20,7 @@ pub enum MapVersion {
 }
 
 pub fn map_version(name: &str) -> Option<MapVersion> {
-    let rest = name.strip_prefix("Smashcraft ")?.strip_suffix(".w3x")?;
+    let rest = name.strip_prefix("Mak'gora ")?.strip_suffix(".w3x")?;
     if let Some((line, build)) = rest.split_once("-dev.") {
         let mut line = line.split('.').map(|part| part.parse::<u32>().ok());
         let (_, _) = (line.next()??, line.next()??);
@@ -146,7 +146,7 @@ impl Play {
     }
 
     pub fn start(self: &Arc<Self>, maps_folders: &[PathBuf], env: &Env, in_match: bool, changed: impl Fn(PlayState) + Send + Sync + 'static) -> Result<(), String> {
-        let map = current_map(maps_folders).ok_or("No Mak'gora map is in Warcraft III's Maps/00-Smashcraft folder yet.")?;
+        let map = current_map(maps_folders).ok_or("No Mak'gora map is in Warcraft III's Maps/00-Makgora folder yet.")?;
         let route = route_for(&map, &Setup::from_env(env, in_match));
         self.go(&map, route, env, crate::launch::window::raise_warcraft, Arc::new(changed))
     }
@@ -271,22 +271,22 @@ mod tests {
     }
 
     #[test]
-    fn the_current_map_is_the_highest_release_in_00_smashcraft_per_the_client_interface() {
-        assert_eq!(map_version("Smashcraft 0.0.41.w3x"), Some(MapVersion::Release(0, 0, 41)));
-        assert_eq!(map_version("Smashcraft 0.0.41 test 2.w3x"), None);
+    fn the_current_map_is_the_highest_release_in_00_makgora_per_the_client_interface() {
+        assert_eq!(map_version("Mak'gora 0.0.41.w3x"), Some(MapVersion::Release(0, 0, 41)));
+        assert_eq!(map_version("Mak'gora 0.0.41 test 2.w3x"), None);
         assert_eq!(map_version("Other 0.0.41.w3x"), None);
         let dir = tmp("maps");
         let folder = dir.join("Maps");
-        std::fs::create_dir_all(folder.join("00-Smashcraft/tests")).unwrap();
-        for name in ["Smashcraft 0.0.9.w3x", "Smashcraft 0.0.10.w3x", "tests/Smashcraft 0.0.11.w3x", "Smashcraft 0.0.12 test 1.w3x"] {
-            std::fs::write(folder.join("00-Smashcraft").join(name), "").unwrap();
+        std::fs::create_dir_all(folder.join("00-Makgora/tests")).unwrap();
+        for name in ["Mak'gora 0.0.9.w3x", "Mak'gora 0.0.10.w3x", "tests/Mak'gora 0.0.11.w3x", "Mak'gora 0.0.12 test 1.w3x"] {
+            std::fs::write(folder.join("00-Makgora").join(name), "").unwrap();
         }
         let map = current_map(std::slice::from_ref(&folder)).unwrap();
-        assert_eq!(map, folder.join("00-Smashcraft/Smashcraft 0.0.10.w3x"));
-        for name in ["Smashcraft 0.3-dev.438.w3x", "Smashcraft 0.3-dev.456.w3x", "Smashcraft 0.3-dev.99.w3x", "Smashcraft 0.3-dev.500 test 2.w3x"] {
-            std::fs::write(folder.join("00-Smashcraft").join(name), "").unwrap();
+        assert_eq!(map, folder.join("00-Makgora/Mak'gora 0.0.10.w3x"));
+        for name in ["Mak'gora 0.3-dev.438.w3x", "Mak'gora 0.3-dev.456.w3x", "Mak'gora 0.3-dev.99.w3x", "Mak'gora 0.3-dev.500 test 2.w3x"] {
+            std::fs::write(folder.join("00-Makgora").join(name), "").unwrap();
         }
-        assert_eq!(current_map(std::slice::from_ref(&folder)).unwrap(), folder.join("00-Smashcraft/Smashcraft 0.3-dev.456.w3x"));
+        assert_eq!(current_map(std::slice::from_ref(&folder)).unwrap(), folder.join("00-Makgora/Mak'gora 0.3-dev.456.w3x"));
         let given = launch_for(&map, Some("wc3".into()), false).unwrap();
         assert_eq!((given.program, given.args.len()), ("wc3".into(), 3));
         assert_eq!(launch_for(&map, None, false), None, "no wine route on Linux");
@@ -296,7 +296,7 @@ mod tests {
     #[test]
     fn linux_plays_through_bun_wisp_play_in_the_tools_folder_or_steams_shortcut_and_never_wine() {
         let tools = tmp("tools");
-        let map = Path::new("/maps/00-Smashcraft/Smashcraft 0.3-dev.470.w3x");
+        let map = Path::new("/maps/00-Makgora/Mak'gora 0.3-dev.470.w3x");
         let Route::Wisp(run) = route_for(map, &setup(Some(tools.clone()), false)) else { panic!("expected the wisp route") };
         assert_eq!((run.program, run.args, run.dir), ("bun".into(), vec![OsString::from("wisp"), "play".into()], tools.clone()));
         assert_eq!(route_for(map, &setup(None, false)), Route::Shortcut);
@@ -328,7 +328,7 @@ mod tests {
         let (changed, rx) = collect();
         let raised = std::cell::Cell::new(0);
         let tools = tmp("in-match");
-        let map = Path::new("/maps/Smashcraft 0.3-dev.470.w3x");
+        let map = Path::new("/maps/Mak'gora 0.3-dev.470.w3x");
         let route = route_for(map, &setup(Some(tools.clone()), true));
         assert_eq!(route, Route::InMatch);
         play.go(
@@ -354,7 +354,7 @@ mod tests {
     fn a_failed_launch_keeps_every_step_line_and_the_error_and_a_missing_program_shows_the_os_error() {
         let play = Arc::new(Play::default());
         let (changed, rx) = collect();
-        let map = Path::new("/maps/Smashcraft 0.3-dev.470.w3x");
+        let map = Path::new("/maps/Mak'gora 0.3-dev.470.w3x");
         let script = "echo '1/7 Wine prefix: free'; echo '2/7 Battle.net: starting the Steam shortcut' ; echo 'Battle.net needs its owner to sign in' >&2; exit 3";
         let run = Run { program: "sh".into(), args: vec!["-c".into(), script.into()], dir: std::env::temp_dir() };
         play.go(map, Route::Wisp(run), &Env::default(), || Ok(()), changed.clone()).unwrap();

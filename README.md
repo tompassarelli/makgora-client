@@ -51,8 +51,8 @@ beside it, and `VERSION` naming the commits it was built from. Run
 `makgora`. On Linux the app needs WebKitGTK 4.1 and libayatana-appindicator
 (`libwebkit2gtk-4.1-0 libayatana-appindicator3-1` on Debian and Ubuntu).
 
-Put a Mak'gora map, `Smashcraft 0.0.N.w3x`, in Warcraft III's
-`Maps/00-Smashcraft` folder. Play starts it. `makgora --check` prints,
+Put a Mak'gora map, `Mak'gora 0.0.N.w3x`, in Warcraft III's
+`Maps/00-Makgora` folder. Play starts it. `makgora --check` prints,
 without opening a window, what the controller service reports (its pad), the
 bundled service it would start, and the map and command Play would run.
 
@@ -73,7 +73,7 @@ To move to a newer Mak'gora, put its commit in `makgora.ref`.
 
 ## Play
 
-Play needs a Mak'gora map in `Maps/00-Smashcraft` beside the History
+Play needs a Mak'gora map in `Maps/00-Makgora` beside the History
 page's folders (src-tauri/src/play.rs), and picks its route by system:
 
 - Warcraft III already in a match (the controller status says so): Play

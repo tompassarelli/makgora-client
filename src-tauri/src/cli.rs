@@ -14,7 +14,7 @@ pub fn check(env: &Env) {
     let maps = mapsim::maps_folders(&records::default_folders(env));
     println!("maps folders: {maps:?}");
     match play::current_map(&maps) {
-        None => println!("play: no Mak'gora map in Maps/00-Smashcraft"),
+        None => println!("play: no Mak'gora map in Maps/00-Makgora"),
         Some(map) => println!("play: {} by {:?}", map.display(), play::route_for(&map, &play::Setup::from_env(env, false))),
     }
 }

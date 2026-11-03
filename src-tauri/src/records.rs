@@ -117,10 +117,7 @@ mod tests {
         let folders: Vec<String> = ["a", "b", "missing"].iter().map(|f| fixtures.join(f).to_string_lossy().into_owned()).collect();
         let files = read_record_files(&folders);
         let names: Vec<&str> = files.iter().map(|f| f.name.as_str()).collect();
-        assert_eq!(
-            names,
-            ["makgora-match-1.txt", "makgora-match-2.txt", "makgora-match-3.txt", "makgora-match-4.txt", "makgora-match-1.txt", "makgora-match-7.txt"]
-        );
+        assert_eq!(names, ["makgora-match-1.txt", "makgora-match-2.txt", "makgora-match-3.txt", "makgora-match-4.txt", "makgora-match-1.txt", "makgora-match-7.txt"]);
         assert!(files.iter().all(|f| f.text.starts_with("function PreloadFiles") && f.modified > 0));
         assert!(!is_record_name("makgora-match-index.pld"));
         assert!(!is_record_name("makgora-match-.txt"));

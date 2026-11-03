@@ -47,7 +47,7 @@ fn makgora_maps(folder: &Path, depth: u32, found: &mut Vec<PathBuf>) {
         let name = entry.file_name().to_string_lossy().to_lowercase();
         if path.is_dir() && depth > 0 {
             makgora_maps(&path, depth - 1, found);
-        } else if name.contains("smashcraft") && (name.ends_with(".w3x") || name.ends_with(".w3m")) {
+        } else if name.contains("mak'gora") && (name.ends_with(".w3x") || name.ends_with(".w3m")) {
             found.push(path);
         }
     }

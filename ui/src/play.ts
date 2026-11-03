@@ -1,7 +1,12 @@
 import { h } from "./dom";
 import type { PlayState } from "./controller";
-import { stepsAfterError } from "./play-steps";
 import type { Api } from "./api";
+
+/** The steps the Play panel lists after a press that was refused or failed: the lines the run collected, then the reason Play gives. */
+function stepsAfterError(lines: string[], error: unknown): string[] {
+  const reason = String(error);
+  return lines.includes(reason) ? lines : [...lines, reason];
+}
 
 /** The header's Play button and the steps of the current run beneath it. */
 export function playButton(api: Api): HTMLElement {

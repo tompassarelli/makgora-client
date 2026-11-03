@@ -5,7 +5,7 @@ import { duration, emptyStore, ingest, parseRecord, type RecordFile } from "./re
 import { computeStats, perMatch, percent } from "./stats";
 
 const FIXTURES = join(import.meta.dir, "../test/fixtures/records");
-const RECORD_NAME = /^smashcraft-match-\d+\.txt$/;
+const RECORD_NAME = /^makgora-match-\d+\.txt$/;
 
 /** The fixture folders' record files as the app reads them (makgora-client:src-tauri/src/records.rs), written a minute apart in order. */
 function fixtureFiles(): RecordFile[] {
@@ -21,13 +21,13 @@ function fixtureFiles(): RecordFile[] {
 test("ingesting the fixture folders stores each match once, skips the duplicate and refuses the cut-short record", () => {
   const files = fixtureFiles();
   expect(files.map((f) => `${f.folder}/${f.name}`)).toEqual([
-    "a/smashcraft-match-1.txt", "a/smashcraft-match-2.txt", "a/smashcraft-match-3.txt", "a/smashcraft-match-4.txt",
-    "b/smashcraft-match-1.txt", "b/smashcraft-match-7.txt",
+    "a/makgora-match-1.txt", "a/makgora-match-2.txt", "a/makgora-match-3.txt", "a/makgora-match-4.txt",
+    "b/makgora-match-1.txt", "b/makgora-match-7.txt",
   ]);
   const first = ingest(emptyStore(), files);
   expect(first.added.map((r) => r.id)).toEqual(["0.0.60|1|Tom#1234", "0.0.60|2|Tom#1234", "0.0.58|4|Tom#1234", "0.0.60|7|Rival#5678"]);
   expect(first.duplicates).toBe(1);
-  expect(first.refused).toEqual([{ file: "a/smashcraft-match-3.txt", reason: "cut short" }]);
+  expect(first.refused).toEqual([{ file: "a/makgora-match-3.txt", reason: "cut short" }]);
   // The history lists the newest first.
   expect(first.store.records.map((r) => r.serial)).toEqual([7, 4, 2, 1]);
 
@@ -52,8 +52,8 @@ test("ingesting the fixture folders stores each match once, skips the duplicate 
 test("a record file that isn't whole, or whose lines don't parse, is refused", () => {
   const [file] = fixtureFiles();
   const whole = file!.text;
-  expect(parseRecord({ ...file!, text: whole.slice(0, whole.indexOf("endfunction")) })).toEqual({ file: "a/smashcraft-match-1.txt", reason: "not a whole record file" });
-  expect(parseRecord({ ...file!, text: whole.replace("kos=3", "kos=x") })).toEqual({ file: "a/smashcraft-match-1.txt", reason: "kos isn't a count" });
+  expect(parseRecord({ ...file!, text: whole.slice(0, whole.indexOf("endfunction")) })).toEqual({ file: "a/makgora-match-1.txt", reason: "not a whole record file" });
+  expect(parseRecord({ ...file!, text: whole.replace("kos=3", "kos=x") })).toEqual({ file: "a/makgora-match-1.txt", reason: "kos isn't a count" });
 });
 
 test("the stats page's numbers from the fixture records: win rate per fighter and matchup, KOs and falls per match, average damage", () => {

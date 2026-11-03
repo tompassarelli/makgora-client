@@ -8,10 +8,10 @@ use crate::env::Env;
 use crate::files::{self, TextFile};
 use std::path::{Path, PathBuf};
 
-const PREFIX: &str = "smashcraft-match-";
+const PREFIX: &str = "makgora-match-";
 const SUFFIX: &str = ".txt";
 
-/// Whether `name` is a match record's file name, `smashcraft-match-<serial>.txt`.
+/// Whether `name` is a match record's file name, `makgora-match-<serial>.txt`.
 fn is_record_name(name: &str) -> bool {
     files::serial_of(name, PREFIX, SUFFIX).is_some()
 }
@@ -119,11 +119,11 @@ mod tests {
         let names: Vec<&str> = files.iter().map(|f| f.name.as_str()).collect();
         assert_eq!(
             names,
-            ["smashcraft-match-1.txt", "smashcraft-match-2.txt", "smashcraft-match-3.txt", "smashcraft-match-4.txt", "smashcraft-match-1.txt", "smashcraft-match-7.txt"]
+            ["makgora-match-1.txt", "makgora-match-2.txt", "makgora-match-3.txt", "makgora-match-4.txt", "makgora-match-1.txt", "makgora-match-7.txt"]
         );
         assert!(files.iter().all(|f| f.text.starts_with("function PreloadFiles") && f.modified > 0));
-        assert!(!is_record_name("smashcraft-match-index.pld"));
-        assert!(!is_record_name("smashcraft-match-.txt"));
+        assert!(!is_record_name("makgora-match-index.pld"));
+        assert!(!is_record_name("makgora-match-.txt"));
     }
 
     #[test]

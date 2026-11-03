@@ -84,7 +84,7 @@ fn records_between(folder: &str, from: u64, to: u64) -> Vec<String> {
         .flatten()
         .filter(|entry| {
             let name = entry.file_name().to_string_lossy().into_owned();
-            name.strip_prefix("smashcraft-match-").and_then(|rest| rest.strip_suffix(".txt")).is_some_and(|serial| !serial.is_empty() && serial.bytes().all(|b| b.is_ascii_digit()))
+            name.strip_prefix("makgora-match-").and_then(|rest| rest.strip_suffix(".txt")).is_some_and(|serial| !serial.is_empty() && serial.bytes().all(|b| b.is_ascii_digit()))
         })
         .filter(|entry| modified_ms(std::fs::metadata(entry.path())).is_some_and(|at| (from..=to).contains(&at)))
         .map(|entry| entry.file_name().to_string_lossy().into_owned())
@@ -214,16 +214,16 @@ mod tests {
         let library = Library::new(&root.join("data"));
         let end = 1_791_340_378_000; // 2026-10-07 02:32:58 UTC
         let records = Path::new(&folder);
-        write_at(&records.join("smashcraft-match-1.txt"), b"earlier game", end - 30 * MINUTE);
-        write_at(&records.join("smashcraft-match-2.txt"), b"first match", end - 9 * MINUTE);
-        write_at(&records.join("smashcraft-match-3.txt"), b"rematch", end - 2_000);
-        write_at(&records.join("smashcraft-match-index.pld"), b"index", end - 2_000);
+        write_at(&records.join("makgora-match-1.txt"), b"earlier game", end - 30 * MINUTE);
+        write_at(&records.join("makgora-match-2.txt"), b"first match", end - 9 * MINUTE);
+        write_at(&records.join("makgora-match-3.txt"), b"rematch", end - 2_000);
+        write_at(&records.join("makgora-match-index.pld"), b"index", end - 2_000);
         write_at(&replays.join(LAST_REPLAY), &w3g(10 * MINUTE, b"game one"), end);
 
         assert_eq!(replay_folders(&folder), std::slice::from_ref(&replays));
         let game = library.keep_last(&folder, &replays).unwrap().unwrap();
         assert!(game.file.starts_with("warcraft-20261007-023258-") && game.file.ends_with(".w3g"));
-        assert_eq!(game.records, ["smashcraft-match-2.txt", "smashcraft-match-3.txt"]);
+        assert_eq!(game.records, ["makgora-match-2.txt", "makgora-match-3.txt"]);
         assert_eq!((game.started, game.ended), (end - 10 * MINUTE, end));
         assert_eq!(std::fs::read(root.join("data/warcraft-replays").join(&game.file)).unwrap(), w3g(10 * MINUTE, b"game one"));
 
@@ -237,10 +237,10 @@ mod tests {
         assert_eq!(library.keep_last(&folder, &replays).unwrap(), None);
 
         // The next Mak'gora game is.
-        write_at(&records.join("smashcraft-match-4.txt"), b"next", end + 58 * MINUTE);
+        write_at(&records.join("makgora-match-4.txt"), b"next", end + 58 * MINUTE);
         write_at(&replays.join(LAST_REPLAY), &w3g(4 * MINUTE, b"game two"), end + 59 * MINUTE);
         let next = library.keep_last(&folder, &replays).unwrap().unwrap();
-        assert_eq!(next.records, ["smashcraft-match-4.txt"]);
+        assert_eq!(next.records, ["makgora-match-4.txt"]);
         assert_eq!(library.games(), [game.clone(), next]);
 
         let put = library.put_in_warcraft(&game.file, "Makgora 2026-10-07 10.32").unwrap();

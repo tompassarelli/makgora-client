@@ -36,7 +36,7 @@ function fileLines(text: string): string[] {
   return preloadLines(text) ?? text.replace(/\r\n/g, "\n").replace(/\n$/, "").split("\n");
 }
 
-const recordSerial = (name: string) => /^smashcraft-match-(\d+)\.txt$/.exec(name)?.[1];
+const recordSerial = (name: string) => /^makgora-match-(\d+)\.txt$/.exec(name)?.[1];
 
 /** Each replay with its match record, newest first; files that aren't replays are refused with a reason. */
 export function replayEntries(files: readonly ReplayFile[], records: readonly RecordFile[]): { entries: ReplayEntry[]; refused: ReplayRefusal[] } {
@@ -177,7 +177,7 @@ export type WarcraftGame = { file: string; hash: string; started: number; ended:
 
 /** The kept Warcraft game a replay's match was played in: the one whose records include the match's record. */
 export const warcraftGameOf = (entry: ReplayEntry, games: readonly WarcraftGame[]): WarcraftGame | undefined =>
-  entry.parts === undefined ? undefined : games.find((game) => game.folder === entry.folder && game.records.includes(`smashcraft-match-${entry.serial}.txt`));
+  entry.parts === undefined ? undefined : games.find((game) => game.folder === entry.folder && game.records.includes(`makgora-match-${entry.serial}.txt`));
 
 /** The name a kept game gets in Warcraft III's Replays menu, from when it ended (local time). */
 export function warcraftName(ended: number): string {

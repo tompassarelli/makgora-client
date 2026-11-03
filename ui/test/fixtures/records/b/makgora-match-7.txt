@@ -1,7 +1,7 @@
 function PreloadFiles takes nothing returns nothing
 
 	call PreloadStart()
-	call Preload( "smashcraft-match v=1 build=0.0.60 serial=7 local=P2 mode=versus" )
+	call Preload( "makgora-match v=1 build=0.0.60 serial=7 local=P2 mode=versus" )
 	call Preload( "rules stocks=3 minutes=7" )
 	call Preload( "result frames=5000 winner=P2 timed-out=0 interrupted=0" )
 	call Preload( "stage id=3 name=Dalaran" )

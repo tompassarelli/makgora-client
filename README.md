@@ -152,7 +152,7 @@ src-tauri/src/online.rs and the page ui/src/pages/online.ts.
 ## Replays
 
 Every client records each match as a replay in its CustomMapData folder: a
-manifest, `smashcraft-replay-N.txt`, with its parts beside it
+manifest, `makgora-replay-N.txt`, with its parts beside it
 (makgora:docs/design/client.md, "Full-match replays"). The Replays page
 lists the replays in the History page's folders, each beside the record of the
 same match, and the replays the client keeps in `replays/` in its data

@@ -146,7 +146,7 @@ export function parseRecord(file: RecordFile): MatchRecord | Refusal {
   try {
     const parsed = lines.slice(0, -1).map(fieldsOf);
     const header = parsed[0];
-    if (header?.word !== "smashcraft-match") throw new Malformed("not a match record");
+    if (header?.word !== "makgora-match") throw new Malformed("not a match record");
     const only = (word: string) => {
       const line = parsed.find((p) => p.word === word);
       if (line === undefined) throw new Malformed(`no ${word} line`);

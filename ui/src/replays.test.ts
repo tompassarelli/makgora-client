@@ -33,12 +33,12 @@ const simulations = (kept: Record<string, Simulation> = {}, maps: Record<string,
 });
 
 test("a manifest is listed with the record of the same match beside it; a stray file is refused", () => {
-  const record = readFileSync(join(import.meta.dir, "../test/fixtures/records/a/smashcraft-match-1.txt"), "utf8").replace(/build=\S+/, "build=test").replace(/serial=\d+/, `serial=${TAPE_REPLAY_SERIAL}`);
+  const record = readFileSync(join(import.meta.dir, "../test/fixtures/records/a/makgora-match-1.txt"), "utf8").replace(/build=\S+/, "build=test").replace(/serial=\d+/, `serial=${TAPE_REPLAY_SERIAL}`);
   const files: ReplayFile[] = [
-    { folder: "a", name: `smashcraft-replay-${TAPE_REPLAY_SERIAL}.txt`, text: manifest, modified: 2 },
+    { folder: "a", name: `makgora-replay-${TAPE_REPLAY_SERIAL}.txt`, text: manifest, modified: 2 },
     { folder: "b", name: "notes.txt", text: "hello", modified: 1 },
   ];
-  const { entries, refused } = replayEntries(files, [{ folder: "a", name: `smashcraft-match-${TAPE_REPLAY_SERIAL}.txt`, text: record, modified: 2 }]);
+  const { entries, refused } = replayEntries(files, [{ folder: "a", name: `makgora-match-${TAPE_REPLAY_SERIAL}.txt`, text: record, modified: 2 }]);
   expect(entries.map((e) => [e.build, e.version, e.serial, e.frames, e.parts])).toEqual([["test", own.sourceVersion(), TAPE_REPLAY_SERIAL, 700, parts.length]]);
   expect(entries[0]?.record?.serial).toBe(TAPE_REPLAY_SERIAL);
   expect(refused.map((r) => r.file)).toEqual(["notes.txt"]);
@@ -114,13 +114,13 @@ test("a kept Warcraft game is listed under a tape replay exactly when, in the sa
   for (let i = 0; i < 1000; i++) {
     const games: WarcraftGame[] = Array.from({ length: Math.floor(next() * 3) }, (_, g) => ({
       file: `warcraft-${g}.w3g`, hash: `${g}`, started: 0, ended: 1, folder: pick(["a", "b"]), replays: "r",
-      records: [1, 2, 3, 4].filter(() => next() < 0.4).map((n) => `smashcraft-match-${n}.txt`),
+      records: [1, 2, 3, 4].filter(() => next() < 0.4).map((n) => `makgora-match-${n}.txt`),
     }));
     const folder = pick(["a", "b"]);
     const serial = pick([1, 2, 3, 4]);
     const parts = pick([undefined, 1, 4]);
     const entry = { key: `${folder}/x`, folder, name: "x", build: "b", version: "v", serial, frames: 1, modified: 1, ...(parts === undefined ? {} : { parts }) };
-    const holders = games.filter((game) => game.folder === folder && game.records.includes(`smashcraft-match-${serial}.txt`));
+    const holders = games.filter((game) => game.folder === folder && game.records.includes(`makgora-match-${serial}.txt`));
     expect(warcraftGameOf(entry, games)).toBe(parts === undefined ? undefined : holders[0]);
   }
 });

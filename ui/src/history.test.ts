@@ -22,7 +22,7 @@ function fakeApi(files: RecordFile[]) {
 }
 
 test("refreshing history saves new matches once and a second look at the same folders writes nothing", async () => {
-  const { api, stored } = fakeApi([record("smashcraft-match-1.txt"), record("smashcraft-match-2.txt")]);
+  const { api, stored } = fakeApi([record("makgora-match-1.txt"), record("makgora-match-2.txt")]);
   const first = await refreshHistory(api);
   expect(first.added).toHaveLength(2);
   expect(stored.saves).toBe(1);

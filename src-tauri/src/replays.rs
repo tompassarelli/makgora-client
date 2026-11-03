@@ -9,10 +9,10 @@ use crate::files::{self, TextFile};
 use crate::sims::SimStore;
 use std::path::{Path, PathBuf};
 
-const PREFIX: &str = "smashcraft-replay-";
+const PREFIX: &str = "makgora-replay-";
 const SUFFIX: &str = ".txt";
 
-/// The serial a manifest's name `smashcraft-replay-<serial>.txt` carries; a part's name has none.
+/// The serial a manifest's name `makgora-replay-<serial>.txt` carries; a part's name has none.
 pub fn manifest_serial(name: &str) -> Option<u32> {
     files::serial_of(name, PREFIX, SUFFIX)?.parse().ok()
 }
@@ -126,18 +126,18 @@ mod tests {
         let folder = temp("folder");
         let data = temp("data");
         let kept = SharedReplays::new(&data, SimStore::new(&data));
-        for name in ["smashcraft-replay-3.txt", "smashcraft-replay-3-1.txt", "smashcraft-replay-3-2.txt", "smashcraft-match-3.txt"] {
+        for name in ["makgora-replay-3.txt", "makgora-replay-3-1.txt", "makgora-replay-3-2.txt", "makgora-match-3.txt"] {
             std::fs::write(folder.join(name), name).unwrap();
         }
         kept.keep_replay("shared.txt", "joined").unwrap();
         let files = read_replay_files(&[folder.to_string_lossy().into_owned(), "/missing".into()], &kept.replays);
         let names: Vec<&str> = files.iter().map(|f| f.name.as_str()).collect();
         assert_eq!(names.len(), 2);
-        assert!(names.contains(&"smashcraft-replay-3.txt") && names.contains(&"shared.txt"));
-        assert_eq!(read_parts(&folder.to_string_lossy(), 3, 2).unwrap(), ["smashcraft-replay-3-1.txt", "smashcraft-replay-3-2.txt"]);
-        assert!(read_parts(&folder.to_string_lossy(), 3, 3).unwrap_err().contains("smashcraft-replay-3-3.txt"));
-        assert_eq!(manifest_serial("smashcraft-replay-3-1.txt"), None);
-        assert_eq!(manifest_serial("smashcraft-replay-12.txt"), Some(12));
+        assert!(names.contains(&"makgora-replay-3.txt") && names.contains(&"shared.txt"));
+        assert_eq!(read_parts(&folder.to_string_lossy(), 3, 2).unwrap(), ["makgora-replay-3-1.txt", "makgora-replay-3-2.txt"]);
+        assert!(read_parts(&folder.to_string_lossy(), 3, 3).unwrap_err().contains("makgora-replay-3-3.txt"));
+        assert_eq!(manifest_serial("makgora-replay-3-1.txt"), None);
+        assert_eq!(manifest_serial("makgora-replay-12.txt"), Some(12));
     }
 
     /// xorshift64: the same cases on every run.

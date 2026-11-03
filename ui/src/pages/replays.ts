@@ -89,6 +89,54 @@ function viewerCard() {
   };
 }
 
+const replayLines = async (api: Api, entry: ReplayEntry, text: string) =>
+  joinedReplay(text, entry.parts === undefined ? [] : await api.readReplayParts(entry.folder, entry.serial, entry.parts));
+
+/** Puts Warcraft's replay of the whole game into Warcraft III's Replays menu. */
+function inWarcraft(api: Api, game: WarcraftGame, saved: HTMLElement): HTMLElement {
+  const button = h("button", { type: "button", title: "Warcraft III's own replay of the game this match was in, every rematch included" }, "Watch in Warcraft");
+  button.addEventListener("click", async () => {
+    const name = warcraftName(game.ended);
+    try {
+      await api.watchInWarcraft(game.file, name);
+      saved.textContent = `In Warcraft III, open Replays and choose “${name}”.`;
+    } catch (error) {
+      saved.textContent = `Couldn't put this replay in Warcraft III's Replays: ${String(error)}`;
+    }
+  });
+  return button;
+}
+
+type Watcher = (heading: string, lines: string[] | string, names: string[]) => Promise<void>;
+
+/** One replay in the list, with its Watch, share and Watch in Warcraft buttons. */
+function replayRow(api: Api, watch: Watcher, entry: ReplayEntry, text: string, game: WarcraftGame | undefined): HTMLElement {
+  const names = replayNames(entry);
+  const watchButton = h("button.primary", { type: "button" }, "Watch");
+  watchButton.addEventListener("click", async () => void watch(replayTitle(entry), await replayLines(api, entry, text), names));
+  const share = h("button", { type: "button", title: "Keep the whole replay as one file you can copy to another computer" }, "Save a copy to share");
+  const saved = h("span.muted.saved");
+  share.addEventListener("click", async () => {
+    const lines = await replayLines(api, entry, text);
+    if (typeof lines === "string") saved.textContent = `This replay can't be read: ${lines}.`;
+    else saved.textContent = `Saved as ${await api.keepReplay(keptName(lines), `${lines.join("\n")}\n`)}`;
+  });
+  const when = entry.modified > 0 ? new Date(entry.modified).toLocaleString() : "";
+  return h(
+    "li.match",
+    {},
+    h(
+      "div.match-head",
+      {},
+      h("span.result", {}, replayTitle(entry)),
+      h("span.muted", {}, replayDetail(entry)),
+      h("span.muted", {}, versionName(entry.version, entry.build)),
+      h("span.muted.when", {}, when),
+    ),
+    h("div.replay-actions", {}, watchButton, entry.parts !== undefined ? share : null, game === undefined ? null : inWarcraft(api, game, saved), saved),
+  );
+}
+
 export function replaysPage(root: HTMLElement, api: Api): () => void {
   const sims = simulations(api, location.href);
   const list = h("ol.matches");
@@ -99,7 +147,7 @@ export function replaysPage(root: HTMLElement, api: Api): () => void {
   const viewer = viewerCard();
   let live = true;
 
-  const watch = async (heading: string, lines: string[] | string, names: string[]) => {
+  const watch: Watcher = async (heading, lines, names) => {
     if (typeof lines === "string") {
       viewer.show(heading, undefined, names, `This replay can't be read: ${lines}.`);
       return;
@@ -110,51 +158,6 @@ export function replaysPage(root: HTMLElement, api: Api): () => void {
     else viewer.show(heading, new Playback(opened.watch), names);
   };
 
-  const replayLines = async (entry: ReplayEntry, text: string) =>
-    joinedReplay(text, entry.parts === undefined ? [] : await api.readReplayParts(entry.folder, entry.serial, entry.parts));
-
-  /** Puts Warcraft's replay of the whole game into Warcraft III's Replays menu. */
-  const inWarcraft = (game: WarcraftGame, saved: HTMLElement) => {
-    const button = h("button", { type: "button", title: "Warcraft III's own replay of the game this match was in, every rematch included" }, "Watch in Warcraft");
-    button.addEventListener("click", async () => {
-      const name = warcraftName(game.ended);
-      try {
-        await api.watchInWarcraft(game.file, name);
-        saved.textContent = `In Warcraft III, open Replays and choose “${name}”.`;
-      } catch (error) {
-        saved.textContent = `Couldn't put this replay in Warcraft III's Replays: ${String(error)}`;
-      }
-    });
-    return button;
-  };
-
-  const row = (entry: ReplayEntry, text: string, game: WarcraftGame | undefined) => {
-    const names = replayNames(entry);
-    const watchButton = h("button.primary", { type: "button" }, "Watch");
-    watchButton.addEventListener("click", async () => void watch(replayTitle(entry), await replayLines(entry, text), names));
-    const share = h("button", { type: "button", title: "Keep the whole replay as one file you can copy to another computer" }, "Save a copy to share");
-    const saved = h("span.muted.saved");
-    share.addEventListener("click", async () => {
-      const lines = await replayLines(entry, text);
-      if (typeof lines === "string") saved.textContent = `This replay can't be read: ${lines}.`;
-      else saved.textContent = `Saved as ${await api.keepReplay(keptName(lines), `${lines.join("\n")}\n`)}`;
-    });
-    const when = entry.modified > 0 ? new Date(entry.modified).toLocaleString() : "";
-    return h(
-      "li.match",
-      {},
-      h(
-        "div.match-head",
-        {},
-        h("span.result", {}, replayTitle(entry)),
-        h("span.muted", {}, replayDetail(entry)),
-        h("span.muted", {}, versionName(entry.version, entry.build)),
-        h("span.muted.when", {}, when),
-      ),
-      h("div.replay-actions", {}, watchButton, entry.parts !== undefined ? share : null, game === undefined ? null : inWarcraft(game, saved), saved),
-    );
-  };
-
   const refresh = async () => {
     refreshButton.disabled = true;
     try {
@@ -162,7 +165,7 @@ export function replaysPage(root: HTMLElement, api: Api): () => void {
       if (!live) return;
       const { entries, refused } = replayEntries(files, records);
       const texts = new Map(files.map((f) => [`${f.folder}/${f.name}`, f.text]));
-      list.replaceChildren(...entries.map((entry) => row(entry, texts.get(entry.key) ?? "", warcraftGameOf(entry, games))));
+      list.replaceChildren(...entries.map((entry) => replayRow(api, watch, entry, texts.get(entry.key) ?? "", warcraftGameOf(entry, games))));
       if (entries.length === 0) list.append(h("li.muted", {}, "No replays yet. Every match you finish is saved as a replay in the folders on the History page."));
       status.textContent = refused.length > 0 ? `${refused.length} couldn't be read (${refused.map((r) => `${r.file}: ${r.reason}`).join("; ")})` : "";
     } catch (error) {

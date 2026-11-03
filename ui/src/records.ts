@@ -94,6 +94,45 @@ function count(fields: Fields, key: string): number {
 
 const flag = (fields: Fields, key: string) => text(fields, key) === "1";
 
+function fighterOf(fields: Fields): FighterRecord {
+  const computer = text(fields, "kind") === "computer";
+  return {
+    slot: text(fields, "slot"),
+    computer,
+    ...(computer ? {} : { player: text(fields, "player") }),
+    character: count(fields, "character"),
+    hero: text(fields, "name"),
+    stocks: count(fields, "stocks"),
+    damage: count(fields, "damage"),
+    kos: count(fields, "kos"),
+    falls: count(fields, "falls"),
+    left: flag(fields, "left"),
+  };
+}
+
+const combatOf = (fields: Fields): Combat => ({
+  dealt: count(fields, "dealt"),
+  openings: count(fields, "openings"),
+  techs: count(fields, "techs"),
+  missedTechs: count(fields, "missed-techs"),
+  ledgeGrabs: count(fields, "ledge-grabs"),
+});
+
+/** The fighter lines in order, each with its combat line when it has one. */
+function fightersOf(parsed: readonly { word: string; fields: Fields }[]): FighterRecord[] {
+  const fighters: FighterRecord[] = [];
+  for (const { word, fields } of parsed) {
+    if (word === "fighter") fighters.push(fighterOf(fields));
+    else if (word === "combat") {
+      const fighter = fighters.find((f) => f.slot === fields.get("slot"));
+      if (fighter === undefined) throw new Malformed("combat line without its fighter");
+      fighter.combat = combatOf(fields);
+    }
+  }
+  if (fighters.length === 0) throw new Malformed("no fighters");
+  return fighters;
+}
+
 /** Why a record file was not ingested. */
 export type Refusal = { file: string; reason: string };
 
@@ -115,35 +154,7 @@ export function parseRecord(file: RecordFile): MatchRecord | Refusal {
     };
     const rules = only("rules");
     const result = only("result");
-    const fighters: FighterRecord[] = [];
-    for (const { word, fields } of parsed) {
-      if (word === "fighter") {
-        const computer = text(fields, "kind") === "computer";
-        fighters.push({
-          slot: text(fields, "slot"),
-          computer,
-          ...(computer ? {} : { player: text(fields, "player") }),
-          character: count(fields, "character"),
-          hero: text(fields, "name"),
-          stocks: count(fields, "stocks"),
-          damage: count(fields, "damage"),
-          kos: count(fields, "kos"),
-          falls: count(fields, "falls"),
-          left: flag(fields, "left"),
-        });
-      } else if (word === "combat") {
-        const fighter = fighters.find((f) => f.slot === fields.get("slot"));
-        if (fighter === undefined) throw new Malformed("combat line without its fighter");
-        fighter.combat = {
-          dealt: count(fields, "dealt"),
-          openings: count(fields, "openings"),
-          techs: count(fields, "techs"),
-          missedTechs: count(fields, "missed-techs"),
-          ledgeGrabs: count(fields, "ledge-grabs"),
-        };
-      }
-    }
-    if (fighters.length === 0) throw new Malformed("no fighters");
+    const fighters = fightersOf(parsed);
     const build = text(header.fields, "build");
     const serial = count(header.fields, "serial");
     const local = text(header.fields, "local");

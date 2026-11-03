@@ -198,7 +198,7 @@ Tests follow AGENTS.md: every permanent test is one of its five kinds.
 ```sh
 bun scripts/kit.ts       # ui/kit/ from the Mak'gora commit in makgora.ref
 cd ui && bun install && bun test && bun test ../scripts && bun run check && bun run build
-cd ../src-tauri && nix-shell ../shell.nix --run 'cargo test --jobs 2'
+cd .. && bun scripts/test.ts   # builds ui/kit and ui/dist, then cargo test --jobs 2 in shell.nix
 # Install for this user (NixOS): build, keep its libraries alive, write the
 # launcher, desktop entry and refresh an enabled autostart entry.
 cd .. && bun scripts/install.ts
@@ -209,8 +209,8 @@ cargo on `PATH`, rustup's pinned toolchain in ~/.rustup, or a rustup in the
 nix store running that channel. When the pinned toolchain exists its bin folder
 goes first on `PATH` even for a cargo already there, so north's cargo shim finds
 the real cargo. Outside nix-shell it builds inside shell.nix.
-For `cargo test`, put rustup's 1.96.1 toolchain on `PATH` first
-(`$HOME/.rustup/toolchains/1.96.1-x86_64-unknown-linux-gnu/bin`). The install
+shell.nix puts the rustup proxy on `PATH`; it runs the toolchain pinned in
+src-tauri/rust-toolchain.toml, so `cargo test` needs no manual `PATH`. The install
 lives in ~/.local/share/makgora-build-inputs/makgora-client (one folder
 per commit, `current`, the `makgora` launcher and a `runtime` out-link), never
 in the system configuration; its launcher sets `MAKGORA_TS` to

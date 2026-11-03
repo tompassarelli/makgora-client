@@ -30,4 +30,4 @@ permanent test is one of five kinds:
 Any other test is scaffolding, and you delete it before landing.
 
 Run: `bun scripts/kit.ts && cd ui && bun install && bun test && bun test ../scripts`,
-then `cd ../src-tauri && nix-shell ../shell.nix --run 'cargo test --jobs 2'` (README: Build, test, install).
+then from the repository root `bun scripts/test.ts`, which builds ui/kit and ui/dist and runs `cargo test --jobs 2` in shell.nix (README: Build, test, install).

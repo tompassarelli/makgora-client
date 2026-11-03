@@ -1,9 +1,9 @@
-//! Replays (smashcraft:docs/design/client.md, "Full-match replays"): the
+//! Replays (makgora:docs/design/client.md, "Full-match replays"): the
 //! manifests and parts the map writes into each CustomMapData folder, the
 //! joined replays the client keeps (opened from a file or saved to share),
 //! and the simulation of every version the client has played, which watching
 //! a replay needs. The pages join, check and play them
-//! (smashcraft-client:ui/src/replays.ts); this side only reads and keeps files.
+//! (makgora-client:ui/src/replays.ts); this side only reads and keeps files.
 
 use crate::files::{self, TextFile};
 use crate::sims::SimStore;
@@ -115,7 +115,7 @@ mod tests {
     use super::*;
 
     fn temp(name: &str) -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("smashcraft-replays-{name}-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("makgora-replays-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         dir

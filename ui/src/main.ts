@@ -20,7 +20,7 @@ const ROUTES: Route[] = [
 const nav = h("nav");
 const outlet = h("main");
 document.body.append(
-  h("header", {}, h("div.brand", {}, h("span.mark"), "Smashcraft"), nav, playButton(api)),
+  h("header", {}, h("div.brand", {}, h("span.mark"), "Mak'gora"), nav, playButton(api)),
   outlet,
 );
 startRouter(ROUTES, outlet, nav);

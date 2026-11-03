@@ -24,7 +24,7 @@ pub trait Starter: Send + Sync + 'static {
 }
 
 /// The bundled service: `WC3_CONTROLLER_SERVICE`, else `padbridge` beside
-/// this executable, else `padbridge` on the PATH, with Smashcraft's
+/// this executable, else `padbridge` on the PATH, with Mak'gora's
 /// plug-in ([`plugin_program`]). Started detached so it keeps serving after the
 /// window closes.
 pub struct BundledService {
@@ -40,12 +40,12 @@ pub fn service_program(env: &Env) -> PathBuf {
     env.exe_dir().map(|dir| dir.join(name)).filter(|path| path.exists()).unwrap_or_else(|| name.into())
 }
 
-/// Smashcraft's plug-in (smashcraft:controller): `wc3-journal` beside this
+/// Mak'gora's plug-in (makgora:controller): `wc3-journal` beside this
 /// executable, else the one `bun wisp controller` installs; none leaves the
 /// service on Any map.
 pub fn plugin_program(env: &Env) -> Option<PathBuf> {
     let beside = env.exe_dir().map(|dir| dir.join("wc3-journal"));
-    let installed = env.home.as_ref().map(|home| home.join(".local/share/smashcraft-build-inputs/controller/wc3-journal"));
+    let installed = env.home.as_ref().map(|home| home.join(".local/share/makgora-build-inputs/controller/wc3-journal"));
     [beside, installed].into_iter().flatten().find(|path| path.exists())
 }
 
@@ -239,9 +239,9 @@ mod tests {
         let snapshot = Snapshot {
             pad: Some(Pad { name: "Xbox One S pad".into(), id: "pad".into() }),
             game: Some(Game { pid: 7, window: true }),
-            session: Some(Session { map: "Smashcraft".into(), phase: Phase::Match, player: Some(1) }),
+            session: Some(Session { map: "Mak'gora".into(), phase: Phase::Match, player: Some(1) }),
             profile: Profile::Map,
-            map: Some("Smashcraft".into()),
+            map: Some("Mak'gora".into()),
             choice: ProfileChoice::Auto,
             output: model::Output { running: true, ready: true, focused: true },
             problem: None,
@@ -296,7 +296,7 @@ mod tests {
     }
 
     fn install_folder(name: &str, files: &[&str]) -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("smashcraft-link-{name}-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("makgora-link-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         for file in files {
@@ -311,10 +311,10 @@ mod tests {
         let named = Env { controller_service: Some("/opt/padbridge-test".into()), ..Env::default() };
         assert_eq!(service_program(&named), PathBuf::from("/opt/padbridge-test"));
         let install = install_folder("service", &[name]);
-        let beside = Env { current_exe: Some(install.join("smashcraft")), ..Env::default() };
+        let beside = Env { current_exe: Some(install.join("makgora")), ..Env::default() };
         assert_eq!(service_program(&beside), install.join(name));
         let empty = install_folder("service-empty", &[]);
-        let alone = Env { current_exe: Some(empty.join("smashcraft")), ..Env::default() };
+        let alone = Env { current_exe: Some(empty.join("makgora")), ..Env::default() };
         assert_eq!(service_program(&alone), PathBuf::from(name));
         assert_eq!(service_program(&Env::default()), PathBuf::from(name));
         std::fs::remove_dir_all(install).unwrap();
@@ -324,10 +324,10 @@ mod tests {
     #[test]
     fn the_plug_in_is_beside_this_executable_else_the_one_wisp_installs_in_the_home_folder_else_none() {
         let install = install_folder("plugin", &["wc3-journal"]);
-        let beside = Env { current_exe: Some(install.join("smashcraft")), ..Env::default() };
+        let beside = Env { current_exe: Some(install.join("makgora")), ..Env::default() };
         assert_eq!(plugin_program(&beside), Some(install.join("wc3-journal")));
         let home = install_folder("plugin-home", &[]);
-        let installed = home.join(".local/share/smashcraft-build-inputs/controller");
+        let installed = home.join(".local/share/makgora-build-inputs/controller");
         std::fs::create_dir_all(&installed).unwrap();
         std::fs::write(installed.join("wc3-journal"), "").unwrap();
         let wisp = Env { home: Some(home.clone()), ..Env::default() };

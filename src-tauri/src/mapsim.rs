@@ -4,7 +4,7 @@
 //! client reads the map's war3map.lua (mpq.rs), keeps it under that version,
 //! and runs it in 32-bit Lua (lua32.rs), Warcraft's number model, with the
 //! viewer's two modules (viewer.lua from the client kit,
-//! smashcraft:docs/client-interface.md) added to the map's own modules. The
+//! makgora:docs/client-interface.md) added to the map's own modules. The
 //! viewer's functions take and give text: the page's scenes as JSON.
 
 use std::collections::HashMap;
@@ -21,7 +21,7 @@ use crate::sims::SimStore;
 /// replaces with returning its own require and modules.
 const GLUE: &str = include_str!("mapsim.lua");
 
-/// The version stamped into a map's war3map.lua (smashcraft:ts/src/game/shell/sourceVersion.ts):
+/// The version stamped into a map's war3map.lua (makgora:ts/src/game/shell/sourceVersion.ts):
 /// the first quoted 12 hex digits in its sourceVersion module.
 pub fn stamped_version(war3: &str) -> Option<String> {
     let module = war3.find("[\"game.shell.sourceVersion\"] = function")?;
@@ -39,14 +39,14 @@ pub fn maps_folders(record_folders: &[String]) -> Vec<PathBuf> {
     record_folders.iter().filter_map(|folder| Path::new(folder).parent().map(|parent| parent.join("Maps"))).filter(|maps| maps.is_dir()).collect()
 }
 
-/// Every Smashcraft map under `folder`, a few levels deep: Download keeps hosted maps in their own folders.
-fn smashcraft_maps(folder: &Path, depth: u32, found: &mut Vec<PathBuf>) {
+/// Every Mak'gora map under `folder`, a few levels deep: Download keeps hosted maps in their own folders.
+fn makgora_maps(folder: &Path, depth: u32, found: &mut Vec<PathBuf>) {
     let Ok(entries) = std::fs::read_dir(folder) else { return };
     for entry in entries.flatten() {
         let path = entry.path();
         let name = entry.file_name().to_string_lossy().to_lowercase();
         if path.is_dir() && depth > 0 {
-            smashcraft_maps(&path, depth - 1, found);
+            makgora_maps(&path, depth - 1, found);
         } else if name.contains("smashcraft") && (name.ends_with(".w3x") || name.ends_with(".w3m")) {
             found.push(path);
         }
@@ -92,11 +92,11 @@ impl MapSims {
         plain.then(|| format!("{version}.lua"))
     }
 
-    /// Reads every Smashcraft map in `folders` not read since it last changed, keeping each version's war3map.lua.
+    /// Reads every Mak'gora map in `folders` not read since it last changed, keeping each version's war3map.lua.
     pub fn scan(&self, folders: &[PathBuf]) -> Vec<String> {
         let mut maps = Vec::new();
         for folder in folders {
-            smashcraft_maps(folder, 3, &mut maps);
+            makgora_maps(folder, 3, &mut maps);
         }
         let mut scanned = self.scanned.lock().unwrap();
         for path in maps {
@@ -130,9 +130,9 @@ impl MapSims {
         let war3 = self.kept.read(&name).ok_or_else(|| format!("no map of version {version} was found"))?;
         let lua = Lua::new()?;
         lua.run(GLUE, "glue")?;
-        lua.call(c"smashcraft_load_map", &[&war3])?;
-        lua.call(c"smashcraft_add_viewer", &[viewer])?;
-        let opened = lua.call(c"smashcraft_open", &[replay])?;
+        lua.call(c"makgora_load_map", &[&war3])?;
+        lua.call(c"makgora_add_viewer", &[viewer])?;
+        let opened = lua.call(c"makgora_open", &[replay])?;
         let mut next = self.next.lock().unwrap();
         let id = *next;
         *next += 1;
@@ -145,7 +145,7 @@ impl MapSims {
         let sessions = self.sessions.lock().unwrap();
         let session = sessions.get(&id).ok_or("that replay isn't open")?.lock().unwrap();
         let arg = frames.to_string();
-        session.lua.call(if seek { c"smashcraft_seek" } else { c"smashcraft_advance" }, &[&arg])
+        session.lua.call(if seek { c"makgora_seek" } else { c"makgora_advance" }, &[&arg])
     }
 
     pub fn close(&self, id: u32) {
@@ -172,7 +172,7 @@ mod tests {
     fn plays_a_replay_in_a_map_bundle_with_the_viewer_modules_added() {
         // A stand-in map: a bundle whose simulation module counts frames, and a viewer driver reading it.
         let war3 = r#"function main() end
-smashcraftTs = assert(load([=[
+makgoraTs = assert(load([=[
 local ____modules = {}
 local function require(file, ...) return ____modules[file](file) end
 ____modules = {
@@ -194,7 +194,7 @@ return ____entry
   }
 end,
 }"#;
-        let dir = std::env::temp_dir().join(format!("smashcraft-mapsim-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("makgora-mapsim-{}", std::process::id()));
         let maps = dir.join("Maps/Download");
         std::fs::create_dir_all(&maps).unwrap();
         let sims = MapSims::new(SimStore::new(&dir.join("data")));
@@ -219,16 +219,16 @@ end,
         let read = |name: &str| std::fs::read_to_string(kit.join(name)).unwrap_or_else(|_| panic!("no {name} in ui/kit: run bun scripts/kit.ts"));
         let lua = Lua::new().unwrap();
         lua.run(GLUE, "glue").unwrap();
-        lua.call(c"smashcraft_load_map", &[&read("fixtures/map.lua")]).unwrap();
-        lua.call(c"smashcraft_add_viewer", &[&read("viewer.lua")]).unwrap();
-        let opened = lua.call(c"smashcraft_open", &[&read("fixtures/tape-replay.txt")]).unwrap();
+        lua.call(c"makgora_load_map", &[&read("fixtures/map.lua")]).unwrap();
+        lua.call(c"makgora_add_viewer", &[&read("viewer.lua")]).unwrap();
+        let opened = lua.call(c"makgora_open", &[&read("fixtures/tape-replay.txt")]).unwrap();
         assert_eq!(serde_json::from_str::<serde_json::Value>(&opened).unwrap(), serde_json::json!({ "first": 0, "last": 700, "frame": 0 }));
-        let advanced: serde_json::Value = serde_json::from_str(&lua.call(c"smashcraft_advance", &["450"]).unwrap()).unwrap();
+        let advanced: serde_json::Value = serde_json::from_str(&lua.call(c"makgora_advance", &["450"]).unwrap()).unwrap();
         assert_eq!((advanced["frame"].as_i64(), advanced["ended"].as_bool(), advanced["scene"]["fighters"].as_array().map(Vec::len)), (Some(450), Some(false), Some(2)));
         assert!(!advanced["scene"]["fighters"][0]["parts"].as_array().unwrap().is_empty());
-        let sought: serde_json::Value = serde_json::from_str(&lua.call(c"smashcraft_seek", &["120"]).unwrap()).unwrap();
+        let sought: serde_json::Value = serde_json::from_str(&lua.call(c"makgora_seek", &["120"]).unwrap()).unwrap();
         assert_eq!((sought["frame"].as_i64(), sought["scene"]["frame"].as_i64()), (Some(120), Some(120)));
-        let ended: serde_json::Value = serde_json::from_str(&lua.call(c"smashcraft_advance", &["1000"]).unwrap()).unwrap();
+        let ended: serde_json::Value = serde_json::from_str(&lua.call(c"makgora_advance", &["1000"]).unwrap()).unwrap();
         assert_eq!((ended["frame"].as_i64(), ended["ended"].as_bool()), (Some(700), Some(true)));
     }
 }

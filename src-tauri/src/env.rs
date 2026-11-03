@@ -4,8 +4,8 @@
 use std::ffi::{OsStr, OsString};
 use std::path::PathBuf;
 
-/// The variable that names Smashcraft's tools folder (its ts folder).
-pub const TOOLS_VARIABLE: &str = "SMASHCRAFT_TS";
+/// The variable that names Mak'gora's tools folder (its ts folder).
+pub const TOOLS_VARIABLE: &str = "MAKGORA_TS";
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Env {
@@ -14,9 +14,9 @@ pub struct Env {
     pub xdg_config_home: Option<PathBuf>,
     pub wine_prefix: Option<PathBuf>,
     pub current_exe: Option<PathBuf>,
-    /// Smashcraft's tools folder.
+    /// Mak'gora's tools folder.
     pub tools: Option<PathBuf>,
-    /// `SMASHCRAFT_LAUNCHER`: the installed launcher that survives updates.
+    /// `MAKGORA_LAUNCHER`: the installed launcher that survives updates.
     pub launcher: Option<PathBuf>,
     /// `WC3_CONTROLLER_SERVICE`: the service program to start.
     pub controller_service: Option<PathBuf>,
@@ -42,10 +42,10 @@ impl Env {
             wine_prefix: path("WINEPREFIX"),
             current_exe,
             tools: path(TOOLS_VARIABLE),
-            launcher: path("SMASHCRAFT_LAUNCHER"),
+            launcher: path("MAKGORA_LAUNCHER"),
             controller_service: path("WC3_CONTROLLER_SERVICE"),
             controller_port: port("WC3_CONTROLLER_PORT"),
-            client_port: port("SMASHCRAFT_CLIENT_PORT"),
+            client_port: port("MAKGORA_CLIENT_PORT"),
             warcraft_iii: var("WARCRAFT_III"),
             bun: var("BUN"),
             steam: var("STEAM"),
@@ -69,14 +69,14 @@ mod tests {
     #[test]
     fn reads_each_variable_once_and_ports_only_when_they_parse() {
         let vars =
-            [("HOME", "/h"), ("USERPROFILE", "C:/u"), ("SMASHCRAFT_TS", "/ts"), ("WC3_CONTROLLER_PORT", "4000"), ("SMASHCRAFT_CLIENT_PORT", "not a port"), ("STEAM", "/bin/steam")];
-        let env = Env::from_vars(|name| vars.iter().find(|(key, _)| *key == name).map(|(_, value)| OsString::from(value)), Some("/opt/smashcraft/client".into()));
+            [("HOME", "/h"), ("USERPROFILE", "C:/u"), ("MAKGORA_TS", "/ts"), ("WC3_CONTROLLER_PORT", "4000"), ("MAKGORA_CLIENT_PORT", "not a port"), ("STEAM", "/bin/steam")];
+        let env = Env::from_vars(|name| vars.iter().find(|(key, _)| *key == name).map(|(_, value)| OsString::from(value)), Some("/opt/makgora/client".into()));
         assert_eq!(env.home.as_deref(), Some("/h".as_ref()));
         assert_eq!(env.user_profile.as_deref(), Some("C:/u".as_ref()));
         assert_eq!(env.tools.as_deref(), Some("/ts".as_ref()));
         assert_eq!((env.controller_port, env.client_port), (Some(4000), None));
         assert_eq!(env.steam.as_deref(), Some("/bin/steam".as_ref()));
-        assert_eq!(env.exe_dir().as_deref(), Some("/opt/smashcraft".as_ref()));
+        assert_eq!(env.exe_dir().as_deref(), Some("/opt/makgora".as_ref()));
         assert_eq!((env.bun_program(), env.xdg_config_home, env.warcraft_iii), ("bun".into(), None, None));
     }
 }

@@ -7,7 +7,7 @@ use std::time::Duration;
 
 use crate::env::Env;
 
-/// `SMASHCRAFT_CLIENT_PORT` overrides it for tests.
+/// `MAKGORA_CLIENT_PORT` overrides it for tests.
 pub const CLIENT_PORT: u16 = 47632;
 const SHOW: &[u8] = b"show\n";
 

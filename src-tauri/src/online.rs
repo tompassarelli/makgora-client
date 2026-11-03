@@ -1,11 +1,11 @@
 //! Online play (#25): runs Wisp's standalone window through its relay,
 //! `bun wisp play --standalone --host --relay nearest` and `--join CODE`
-//! (smashcraft:docs/commands/online.md), in Smashcraft's tools, `SMASHCRAFT_TS`
-//! (smashcraft:docs/client-interface.md, "Commands"). The
+//! (makgora:docs/commands/online.md), in Mak'gora's tools, `MAKGORA_TS`
+//! (makgora:docs/client-interface.md, "Commands"). The
 //! command's output lines are written for players and shown on the Online
 //! page; its error output goes to the client's log, except the lines a run
 //! asks to show. Warcraft III is never touched: online play is Wisp's own
-//! window only (smashcraft-client#28).
+//! window only (makgora-client#28).
 
 use serde::{Deserialize, Serialize};
 use std::ffi::OsString;
@@ -60,7 +60,7 @@ fn signal_group(group: u32, signal: i32) -> bool {
     i32::try_from(group).is_ok_and(|group| unsafe { libc::kill(-group, signal) } == 0)
 }
 
-/// Smashcraft's tools folder, when `TOOLS_VARIABLE` names one with a package.json.
+/// Mak'gora's tools folder, when `TOOLS_VARIABLE` names one with a package.json.
 pub fn tools_dir(env: &Env) -> Option<PathBuf> {
     let dir = env.tools.clone()?;
     dir.join("package.json").exists().then_some(dir)
@@ -234,8 +234,8 @@ mod tests {
     #[test]
     fn one_run_at_a_time_and_only_output_lines_are_shown() {
         let online = Arc::new(Online::default());
-        let log = std::env::temp_dir().join(format!("smashcraft-online-{}.log", std::process::id()));
-        let go = std::env::temp_dir().join(format!("smashcraft-online-{}.go", std::process::id()));
+        let log = std::env::temp_dir().join(format!("makgora-online-{}.log", std::process::id()));
+        let go = std::env::temp_dir().join(format!("makgora-online-{}.go", std::process::id()));
         let (tx, rx) = mpsc::channel();
         let script = format!("echo 'Join code: ABCD-EFGH'; echo detail >&2; while [ ! -e '{}' ]; do sleep 0.05; done; echo 'In the match'", go.display());
         online
@@ -266,7 +266,7 @@ mod tests {
     fn error_output_lines_the_run_asks_for_are_listed_among_the_output() {
         let online = Arc::new(Online::default());
         let (tx, rx) = mpsc::channel();
-        let script = "echo 'net: hosting through sgp, round trip to it 183 ms' >&2; echo 'Smashcraft: join code sgp-7K2M-QX9D-R3TB-4'; echo detail >&2";
+        let script = "echo 'net: hosting through sgp, round trip to it 183 ms' >&2; echo \"Mak'gora: join code sgp-7K2M-QX9D-R3TB-4\"; echo detail >&2";
         online
             .start(Mode::Host, Process::new("sh", vec!["-c".into(), script.into()], std::env::temp_dir()), None, shows_relay_round_trip, move |state| {
                 let _ = tx.send(state);
@@ -275,7 +275,7 @@ mod tests {
         let done = wait_finished(&rx);
         assert_eq!(done.lines.len(), 2);
         assert!(done.lines.contains(&"net: hosting through sgp, round trip to it 183 ms".to_owned()));
-        assert!(done.lines.contains(&"Smashcraft: join code sgp-7K2M-QX9D-R3TB-4".to_owned()));
+        assert!(done.lines.contains(&"Mak'gora: join code sgp-7K2M-QX9D-R3TB-4".to_owned()));
     }
 
     #[cfg(unix)]

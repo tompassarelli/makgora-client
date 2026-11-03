@@ -4,8 +4,8 @@ import { DID_NOT_START, looksLikeRelayCode, standaloneView, WAITING_FOR_OPPONENT
 test("a standalone run's view reads the host's relay code and the region's round trip from the lines wisp play --standalone prints, and only a host shows the code (lines recorded in the gex45 two-client run of 30 October 2026)", () => {
   const lines = [
     "net: hosting through sgp, round trip to it 183 ms",
-    "Smashcraft: join code sgp-7K2M-QX9D-R3TB-4 (relay room; the joiner's map must match 4abc9ceb)",
-    "Smashcraft: standalone window opened. Connect a controller or use the keyboard.",
+    "Mak'gora: join code sgp-7K2M-QX9D-R3TB-4 (relay room; the joiner's map must match 4abc9ceb)",
+    "Mak'gora: standalone window opened. Connect a controller or use the keyboard.",
   ];
   const waiting = standaloneView({ available: true, map: null, running: true, mode: "host", lines: lines.slice(0, 2), finished: null });
   expect(waiting.steps).toEqual([WAITING_FOR_OPPONENT]);

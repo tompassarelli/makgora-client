@@ -1,11 +1,11 @@
-//! Warcraft's own replays of Smashcraft games (#159). Warcraft keeps only
+//! Warcraft's own replays of Mak'gora games (#159). Warcraft keeps only
 //! `LastReplay.w3g`, rewritten at the end of every game, in each account's
 //! `Replays` folder. The client copies it into its library once per game
 //! (the same content is kept once), links the copy to the match records
 //! written during that game, and puts a copy back into Warcraft's
 //! `Replays` folder for the player to watch from Warcraft's Replays menu.
 //! A game is a whole lobby session, every rematch included; the client's own
-//! per-match replays are smashcraft-client:src-tauri/src/replays.rs.
+//! per-match replays are makgora-client:src-tauri/src/replays.rs.
 
 use crate::files::{self, millis, modified_ms};
 use serde::{Deserialize, Serialize};
@@ -198,7 +198,7 @@ mod tests {
     }
 
     fn warcraft(name: &str) -> (PathBuf, String, PathBuf) {
-        let root = std::env::temp_dir().join(format!("smashcraft-w3g-{name}-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("makgora-w3g-{name}-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         let docs = root.join("Documents").join("Warcraft III");
         let folder = docs.join("CustomMapData");
@@ -232,18 +232,18 @@ mod tests {
         write_at(&replays.join(LAST_REPLAY), &w3g(10 * MINUTE, b"game one"), end + MINUTE);
         assert_eq!(library.keep_last(&folder, &replays).unwrap(), None);
 
-        // A game with no Smashcraft match in it is not kept.
+        // A game with no Mak'gora match in it is not kept.
         write_at(&replays.join(LAST_REPLAY), &w3g(5 * MINUTE, b"melee"), end + 40 * MINUTE);
         assert_eq!(library.keep_last(&folder, &replays).unwrap(), None);
 
-        // The next Smashcraft game is.
+        // The next Mak'gora game is.
         write_at(&records.join("smashcraft-match-4.txt"), b"next", end + 58 * MINUTE);
         write_at(&replays.join(LAST_REPLAY), &w3g(4 * MINUTE, b"game two"), end + 59 * MINUTE);
         let next = library.keep_last(&folder, &replays).unwrap().unwrap();
         assert_eq!(next.records, ["smashcraft-match-4.txt"]);
         assert_eq!(library.games(), [game.clone(), next]);
 
-        let put = library.put_in_warcraft(&game.file, "Smashcraft 2026-10-07 10.32").unwrap();
+        let put = library.put_in_warcraft(&game.file, "Makgora 2026-10-07 10.32").unwrap();
         assert_eq!(std::fs::read(&put).unwrap(), w3g(10 * MINUTE, b"game one"));
         assert_eq!(Path::new(&put).parent().unwrap(), replays);
         assert!(library.put_in_warcraft(&game.file, "../escape").is_err());

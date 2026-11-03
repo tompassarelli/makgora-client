@@ -1,4 +1,4 @@
-# Build shell for the Smashcraft client on NixOS. Rust comes from rustup's
+# Build shell for the Mak'gora client on NixOS. Rust comes from rustup's
 # pinned toolchain (src-tauri/rust-toolchain.toml), Bun from the user profile.
 { pkgs ? import <nixpkgs> { } }:
 let runtime = import ./runtime.nix { inherit pkgs; };

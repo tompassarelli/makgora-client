@@ -153,7 +153,7 @@ pub fn problems(scan: &Scan) -> Vec<String> {
     for (path, names) in hits {
         for name in names {
             let why = rules.iter().find(|rule| rule.name == *name).map_or(*name, |rule| rule.why);
-            found.push(format!("clean room: {path} {why} ({name}). Smashcraft's behaviour comes from outside the game only; remove it (README, Principles; wisp:docs/clean-room.md)."));
+            found.push(format!("clean room: {path} {why} ({name}). Mak'gora's behaviour comes from outside the game only; remove it (README, Principles; wisp:docs/clean-room.md)."));
         }
     }
     found

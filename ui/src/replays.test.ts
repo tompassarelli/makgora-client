@@ -48,7 +48,7 @@ test("a replay joined from its parts and copied as one file plays with pause, fr
   expect(joinedReplay(manifest, parts.slice(1))).toBe(`the replay has ${parts.length} parts; ${parts.length - 1} were found`);
   const joined = joinedReplay(manifest, parts);
   if (typeof joined === "string") throw new Error(joined);
-  expect(keptName(joined)).toBe(`smashcraft-test-replay-${TAPE_REPLAY_SERIAL}-${own.sourceVersion()}.txt`);
+  expect(keptName(joined)).toBe(`makgora-test-replay-${TAPE_REPLAY_SERIAL}-${own.sourceVersion()}.txt`);
   // Copied to another computer: the one file, opened on its own.
   const copied = joinedReplay(`${joined.join("\n")}\n`, []);
   if (typeof copied === "string") throw new Error(copied);
@@ -89,7 +89,7 @@ test("a replay from a version the client doesn't hold names that version; a kept
   const other = joined.map((line) => (line === `version ${own.sourceVersion()}` ? "version 0123456789ab" : line));
   const missing = await openForWatching(other, simulations());
   expect("problem" in missing && missing.problem).toBe(
-    `This replay was recorded on Smashcraft test (version 0123456789ab). This client can play replays from version ${own.sourceVersion()}. To watch it, put that version's map in your Warcraft III Maps folder.`,
+    `This replay was recorded on Mak'gora test (version 0123456789ab). This client can play replays from version ${own.sourceVersion()}. To watch it, put that version's map in your Warcraft III Maps folder.`,
   );
   const other_: Simulation = { ...own, sourceVersion: () => "0123456789ab" };
   expect("watch" in (await openForWatching(other, simulations({ "0123456789ab": other_ })))).toBe(true);
@@ -97,7 +97,7 @@ test("a replay from a version the client doesn't hold names that version; a kept
   if ("problem" in fromMap) throw new Error(fromMap.problem);
   expect(await fromMap.watch.advance(30)).toBe(true);
   expect(fromMap.watch.frame).toBe(30);
-  expect(await openForWatching(["hello"], simulations())).toEqual({ problem: `This file isn't a Smashcraft replay (not a repro: its first line isn't "wisp-repro 1").` });
+  expect(await openForWatching(["hello"], simulations())).toEqual({ problem: `This file isn't a Mak'gora replay (not a repro: its first line isn't "wisp-repro 1").` });
 });
 
 /** mulberry32: the same cases on every run. */
@@ -129,7 +129,7 @@ test("a kept game's Replays-menu name reads back as the local minute it ended (s
   const next = random(9);
   for (let i = 0; i < 1000; i++) {
     const ended = Math.floor(next() * 4102444800000);
-    const name = /^Smashcraft (\d{4})-(\d{2})-(\d{2}) (\d{2})\.(\d{2})$/.exec(warcraftName(ended));
+    const name = /^Makgora (\d{4})-(\d{2})-(\d{2}) (\d{2})\.(\d{2})$/.exec(warcraftName(ended));
     expect(name).not.toBeNull();
     const [, y, mo, d, h, mi] = name!.map(Number);
     const at = new Date(ended);

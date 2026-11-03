@@ -1,7 +1,7 @@
 //! Match records the map writes into each configured CustomMapData folder
-//! (smashcraft:docs/design/client.md, "Match records"), and the client's own
+//! (makgora:docs/design/client.md, "Match records"), and the client's own
 //! history store. The pages parse, ingest and count them
-//! (smashcraft-client:ui/src/records.ts); this side only reads the folders and
+//! (makgora-client:ui/src/records.ts); this side only reads the folders and
 //! keeps the store as JSON in the client's data folder.
 
 use crate::env::Env;
@@ -128,7 +128,7 @@ mod tests {
 
     #[test]
     fn finds_custom_map_data_in_documents_steam_prefixes_wine_and_wineprefix() {
-        let home = std::env::temp_dir().join(format!("smashcraft-find-{}", std::process::id()));
+        let home = std::env::temp_dir().join(format!("makgora-find-{}", std::process::id()));
         let other = home.join("elsewhere");
         let made = [
             below(&home, "Documents/Warcraft III/CustomMapData"),
@@ -152,7 +152,7 @@ mod tests {
 
     #[test]
     fn history_round_trips_and_is_null_before_the_first_save() {
-        let dir = std::env::temp_dir().join(format!("smashcraft-history-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("makgora-history-{}", std::process::id()));
         let history = History::new(&dir);
         assert_eq!(history.load(), serde_json::Value::Null);
         let value = serde_json::json!({ "version": 1, "records": [{ "id": "x" }] });

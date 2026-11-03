@@ -6,7 +6,7 @@ import type { OnlineState } from "./controller";
 /** What the standalone run prints for the relay it uses: `net: hosting through sgp, round trip to it 183 ms`. */
 const RELAY_LINE = /^net: (?:hosting|joining) through (\S+), round trip to it (\d+) ms$/;
 const STANDALONE_CODE_LINE = /^\S+: join code (\S+) \(/;
-const TITLE_PREFIX = /^[A-Za-z0-9 ]+: /;
+const TITLE_PREFIX = /^[A-Za-z0-9' ]+: /;
 
 /** A standalone run's view: its code is the relay code the host gives their opponent, as `sgp-7K2M-QX9D-R3TB-4`. */
 export type StandaloneView = {

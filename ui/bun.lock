@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "smashcraft-client-ui",
+      "name": "makgora-client-ui",
       "devDependencies": {
         "@types/bun": "1.3.13",
         "typescript": "npm:typescript@7.0.2",

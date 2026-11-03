@@ -47,20 +47,20 @@ export type Control =
 
 export type Press = { key: string } | "left_click" | "right_click" | "pointer";
 export type Binding = { control: Control; action: string; press: Press };
-export type Bindings = { smashcraft: Binding[]; smashcraft_menus: Binding[]; profile: ProfileChoice; pad_preset: PadPreset; tap_jump: boolean; triggers: TriggerShields; right_stick: RightStick; pad_presets: PadPresetBindings[] };
+export type Bindings = { makgora: Binding[]; makgora_menus: Binding[]; profile: ProfileChoice; pad_preset: PadPreset; tap_jump: boolean; triggers: TriggerShields; right_stick: RightStick; pad_presets: PadPresetBindings[] };
 
 export type PlayState = { available: boolean; running: boolean; map: string | null; lines: string[]; finished: boolean | null };
 export type OnlineMode = "host" | "join";
 export type OnlineState = PlayState & { mode: OnlineMode | null };
 
 export const PROFILE_CHOICES: { choice: ProfileChoice; label: string; hint: string }[] = [
-  { choice: "auto", label: "Automatic", hint: "Smashcraft controls in Smashcraft, your own keys everywhere else" },
-  { choice: "map", label: "Smashcraft", hint: "Smashcraft's fighting controls and menus" },
+  { choice: "auto", label: "Automatic", hint: "Mak'gora controls in Mak'gora, your own keys everywhere else" },
+  { choice: "map", label: "Mak'gora", hint: "Mak'gora's fighting controls and menus" },
   { choice: "any_map", label: "Any map", hint: "Your own keys and mouse for any map" },
   { choice: "off", label: "Off", hint: "Your controller doesn't press anything" },
 ];
 
-export const PROFILE_LABEL: Record<Profile, string> = { map: "Smashcraft", any_map: "Any map", off: "Off" };
+export const PROFILE_LABEL: Record<Profile, string> = { map: "Mak'gora", any_map: "Any map", off: "Off" };
 
 const CONTROL_LABEL: Record<Control, string> = {
   left_stick: "Left stick click (L3)",

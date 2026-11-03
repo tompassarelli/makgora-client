@@ -48,7 +48,7 @@ mod tests {
 
     #[test]
     fn settings_round_trip_and_default_when_missing() {
-        let dir = std::env::temp_dir().join(format!("smashcraft-settings-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("makgora-settings-{}", std::process::id()));
         let store = Store::new(&dir);
         assert_eq!(store.load(), Settings::default());
         let settings = Settings { controller_on: true, profile: ProfileChoice::AnyMap, custom_map_data_folders: Some(vec!["/games/CustomMapData".into()]) };

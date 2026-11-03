@@ -29,7 +29,7 @@ function playGrid(state: OnlineState, view: StandaloneView, codeInput: HTMLEleme
   return h(
     "div.grid",
     {},
-    h("section.card", {}, h("h2", {}, "Host a game"), h("p.note", {}, "Opens Smashcraft's window and a room on the nearest relay. Give your opponent the code."), ...hostBody.filter((part) => part !== null)),
+    h("section.card", {}, h("h2", {}, "Host a game"), h("p.note", {}, "Opens Mak'gora's window and a room on the nearest relay. Give your opponent the code."), ...hostBody.filter((part) => part !== null)),
     h(
       "section.card",
       {},
@@ -41,7 +41,7 @@ function playGrid(state: OnlineState, view: StandaloneView, codeInput: HTMLEleme
   );
 }
 
-/** Online play is Smashcraft's own window through Wisp's relay; Warcraft III stays closed. */
+/** Online play is Mak'gora's own window through Wisp's relay; Warcraft III stays closed. */
 export function onlinePage(root: HTMLElement, onlineApi: OnlineApi): () => void {
   let live = true;
   let run: OnlineState = EMPTY;
@@ -70,7 +70,7 @@ export function onlinePage(root: HTMLElement, onlineApi: OnlineApi): () => void 
     root.replaceChildren(
       playGrid(run, view, codeInput, { host, join }),
       ...[stepsCard(run, view, cancel)].filter((card) => card !== null),
-      ...(!run.available ? [h("p.note", {}, "Online play needs Smashcraft's tools (SMASHCRAFT_TS).")] : []),
+      ...(!run.available ? [h("p.note", {}, "Online play needs Mak'gora's tools (MAKGORA_TS).")] : []),
       ...(problem ? [h("p.problem", {}, problem)] : []),
     );
   };

@@ -14,7 +14,7 @@ pub const TRAY: &str = "status";
 
 /// The tray light, starting at `initial`, with Open and Quit; a left click opens the window.
 pub fn add_tray(app: &tauri::App, initial: Light) -> tauri::Result<()> {
-    let open = MenuItem::with_id(app, "open", "Open Smashcraft", true, None::<&str>)?;
+    let open = MenuItem::with_id(app, "open", "Open Mak'gora", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&open, &quit])?;
     TrayIconBuilder::with_id(TRAY)

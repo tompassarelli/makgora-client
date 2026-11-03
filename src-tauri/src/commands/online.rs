@@ -9,7 +9,7 @@ pub fn standalone_state(state: State<AppState>) -> online::OnlineState {
 }
 
 fn start_standalone(app: AppHandle, state: &AppState, mode: online::Mode, code: Option<&str>) -> Result<online::OnlineState, String> {
-    let dir = online::tools_dir(&state.env).ok_or("Online play needs Smashcraft's tools: set SMASHCRAFT_TS to their ts folder.")?;
+    let dir = online::tools_dir(&state.env).ok_or("Online play needs Mak'gora's tools: set MAKGORA_TS to their ts folder.")?;
     let bun = state.env.bun_program();
     let log = state.log_dir.as_ref().map(|dir| dir.join("standalone.log"));
     state.standalone.start(mode, online::Process::new(bun, online::standalone_args(mode, code), dir), log, online::shows_relay_round_trip, move |snapshot| {

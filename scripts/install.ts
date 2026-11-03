@@ -1,6 +1,6 @@
 // Installs the client for this Linux user, outside any system configuration:
-// ~/.local/share/smashcraft-build-inputs/smashcraft-client/<commit>/ holds the
-// build, `current` points at it, `smashcraft` is the launcher the desktop entry
+// ~/.local/share/makgora-build-inputs/makgora-client/<commit>/ holds the
+// build, `current` points at it, `makgora` is the launcher the desktop entry
 // and autostart run. Run from the repository, inside its shell or not:
 //   bun scripts/install.ts
 // Outside nix-shell, the release build runs inside shell.nix for its libraries.
@@ -14,7 +14,7 @@ import { findCargo, hostSearch } from "./cargo";
 
 const client = new URL("..", import.meta.url).pathname;
 const home = homedir();
-const root = join(home, ".local/share/smashcraft-build-inputs/smashcraft-client");
+const root = join(home, ".local/share/makgora-build-inputs/makgora-client");
 const commit = (await $`git -C ${client} rev-parse --short=12 HEAD`.text()).trim();
 const dirty = (await $`git -C ${client} status --porcelain -- .`.text()).trim() !== "";
 const version = dirty ? `${commit}-dirty` : commit;
@@ -39,7 +39,7 @@ await $`nix-build ${join(client, "runtime.nix")} -o ${runtime}`.quiet();
 const dir = join(root, version);
 rmSync(dir, { recursive: true, force: true });
 mkdirSync(dir, { recursive: true });
-cpSync(join(client, "src-tauri/target/release/smashcraft"), join(dir, "smashcraft"));
+cpSync(join(client, "src-tauri/target/release/makgora"), join(dir, "makgora"));
 cpSync(join(client, "src-tauri/icons/icon.png"), join(dir, "icon.png"));
 const next = join(root, "current.next");
 rmSync(next, { force: true });
@@ -47,15 +47,15 @@ symlinkSync(version, next);
 renameSync(next, join(root, "current"));
 
 const service = process.env.WC3_CONTROLLER_SERVICE ?? "";
-const tools = process.env.SMASHCRAFT_TS ?? (existsSync(join(home, "code/smashcraft/main/ts/package.json")) ? join(home, "code/smashcraft/main/ts") : "");
-const launcher = join(root, "smashcraft");
+const tools = process.env.MAKGORA_TS ?? (existsSync(join(home, "code/makgora/main/ts/package.json")) ? join(home, "code/makgora/main/ts") : "");
+const launcher = join(root, "makgora");
 writeFileSync(
   launcher,
   `#!/bin/sh
-# Smashcraft client launcher (written by smashcraft-client:scripts/install.ts).
-export SMASHCRAFT_LAUNCHER="${launcher}"
+# Mak'gora client launcher (written by makgora-client:scripts/install.ts).
+export MAKGORA_LAUNCHER="${launcher}"
 export LD_LIBRARY_PATH="${runtime}/lib\${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-${service ? `export WC3_CONTROLLER_SERVICE="${service}"\n` : ""}${tools ? `export SMASHCRAFT_TS="${tools}"\n` : ""}exec "${root}/current/smashcraft" "$@"
+${service ? `export WC3_CONTROLLER_SERVICE="${service}"\n` : ""}${tools ? `export MAKGORA_TS="${tools}"\n` : ""}exec "${root}/current/makgora" "$@"
 `,
 );
 chmodSync(launcher, 0o755);
@@ -63,11 +63,11 @@ chmodSync(launcher, 0o755);
 const applications = join(home, ".local/share/applications");
 mkdirSync(applications, { recursive: true });
 writeFileSync(
-  join(applications, "smashcraft.desktop"),
+  join(applications, "makgora.desktop"),
   `[Desktop Entry]
 Type=Application
-Name=Smashcraft
-Comment=Controller support and play for Smashcraft
+Name=Mak'gora
+Comment=Controller support and play for Mak'gora
 Exec="${launcher}"
 Icon=${root}/current/icon.png
 Terminal=false
@@ -75,11 +75,11 @@ Categories=Game;
 `,
 );
 // An autostart entry the player turned on keeps pointing at the launcher; refresh it.
-const autostart = join(process.env.XDG_CONFIG_HOME ?? join(home, ".config"), "autostart/smashcraft.desktop");
+const autostart = join(process.env.XDG_CONFIG_HOME ?? join(home, ".config"), "autostart/makgora.desktop");
 if (existsSync(autostart)) {
   writeFileSync(
     autostart,
-    `[Desktop Entry]\nType=Application\nName=Smashcraft\nComment=Controller support for Warcraft III, waiting in the tray\nExec="${launcher}" --hidden\nTerminal=false\nX-GNOME-Autostart-enabled=true\n`,
+    `[Desktop Entry]\nType=Application\nName=Mak'gora\nComment=Controller support for Warcraft III, waiting in the tray\nExec="${launcher}" --hidden\nTerminal=false\nX-GNOME-Autostart-enabled=true\n`,
   );
 }
 console.log(`installed ${version}: ${launcher}`);

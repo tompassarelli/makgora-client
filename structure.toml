@@ -1,4 +1,4 @@
-# smashcraft-client structure.toml (structure-architect planner, 15 Oct 2026). Lands at repo root as structure.toml.
+# makgora-client structure.toml (structure-architect planner, 15 Oct 2026). Lands at repo root as structure.toml.
 # TARGET layers from client-design.md section 2 mapped onto today's files. First matching module wins.
 
 [thresholds]
@@ -95,4 +95,4 @@ responsibility = "Kit fetch, install, cargo wrapper, icons."
 may_use = []
 
 [ignore]
-paths = ["src-tauri/lua-5.3.6/**", "src-tauri/target/**", "ui/node_modules/**", "**/fixtures/**", ".smashcraft/**", "ui/kit/**"]
+paths = ["src-tauri/lua-5.3.6/**", "src-tauri/target/**", "ui/node_modules/**", "**/fixtures/**", ".makgora/**", "ui/kit/**"]

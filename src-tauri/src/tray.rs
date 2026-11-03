@@ -33,9 +33,9 @@ pub fn light_rgba(light: Light) -> Vec<u8> {
 
 pub fn tooltip(light: Light) -> &'static str {
     match light {
-        Light::Green => "Smashcraft: controller ready",
-        Light::Amber => "Smashcraft: controller waiting",
-        Light::Red => "Smashcraft: controller needs attention",
-        Light::Off => "Smashcraft: controller support is off",
+        Light::Green => "Mak'gora: controller ready",
+        Light::Amber => "Mak'gora: controller waiting",
+        Light::Red => "Mak'gora: controller needs attention",
+        Light::Off => "Mak'gora: controller support is off",
     }
 }

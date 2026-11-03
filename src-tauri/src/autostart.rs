@@ -1,5 +1,5 @@
 //! "Start with my computer". Linux writes its own XDG autostart entry so it can
-//! name the installed launcher (`SMASHCRAFT_LAUNCHER`), which survives updates;
+//! name the installed launcher (`MAKGORA_LAUNCHER`), which survives updates;
 //! Windows and macOS use the autostart plugin.
 
 #[cfg(target_os = "linux")]
@@ -11,13 +11,13 @@ use crate::env::Env;
 /// What login should start: the launcher when one started us, else this executable.
 #[cfg(target_os = "linux")]
 pub fn launcher(env: &Env) -> PathBuf {
-    env.launcher.clone().or_else(|| env.current_exe.clone()).unwrap_or_else(|| "smashcraft".into())
+    env.launcher.clone().or_else(|| env.current_exe.clone()).unwrap_or_else(|| "makgora".into())
 }
 
 #[cfg(target_os = "linux")]
 pub fn desktop_entry(exec: &Path) -> String {
     format!(
-        "[Desktop Entry]\nType=Application\nName=Smashcraft\nComment=Controller support for Warcraft III, waiting in the tray\nExec=\"{}\" --hidden\nTerminal=false\nX-GNOME-Autostart-enabled=true\n",
+        "[Desktop Entry]\nType=Application\nName=Mak'gora\nComment=Controller support for Warcraft III, waiting in the tray\nExec=\"{}\" --hidden\nTerminal=false\nX-GNOME-Autostart-enabled=true\n",
         exec.display()
     )
 }
@@ -25,7 +25,7 @@ pub fn desktop_entry(exec: &Path) -> String {
 #[cfg(target_os = "linux")]
 fn entry_path(env: &Env) -> Option<PathBuf> {
     let config = env.xdg_config_home.clone().or_else(|| env.home.as_ref().map(|home| home.join(".config")))?;
-    Some(config.join("autostart/smashcraft.desktop"))
+    Some(config.join("autostart/makgora.desktop"))
 }
 
 #[cfg(target_os = "linux")]
@@ -65,8 +65,8 @@ mod tests {
 
     #[test]
     fn the_entry_follows_the_xdg_desktop_entry_spec_and_starts_the_launcher_hidden_in_the_tray() {
-        let entry = desktop_entry(Path::new("/home/p/.local/share/smashcraft-build-inputs/smashcraft-client/smashcraft"));
-        assert!(entry.contains("Exec=\"/home/p/.local/share/smashcraft-build-inputs/smashcraft-client/smashcraft\" --hidden\n"));
+        let entry = desktop_entry(Path::new("/home/p/.local/share/makgora-build-inputs/makgora-client/makgora"));
+        assert!(entry.contains("Exec=\"/home/p/.local/share/makgora-build-inputs/makgora-client/makgora\" --hidden\n"));
         assert!(entry.starts_with("[Desktop Entry]\nType=Application\n"));
     }
 }

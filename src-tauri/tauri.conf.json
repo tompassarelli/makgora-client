@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Smashcraft",
+  "productName": "Mak'gora",
   "version": "0.1.0",
-  "identifier": "net.smashcraft.client",
+  "identifier": "net.makgora.client",
   "build": {
     "frontendDist": "../ui/dist"
   },
@@ -11,7 +11,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Smashcraft",
+        "title": "Mak'gora",
         "width": 980,
         "height": 720,
         "minWidth": 720,

@@ -23,7 +23,7 @@ function profileCard(onChoice: (choice: ProfileChoice) => void) {
 }
 
 function mappingCard(pad: ReturnType<typeof padView>, api: Api) {
-  const presetSelect = h("select", { "aria-label": "Smashcraft pad preset" });
+  const presetSelect = h("select", { "aria-label": "Mak'gora pad preset" });
   const triggerSelects = { left: h("select", { "aria-label": "Left trigger shield" }), right: h("select", { "aria-label": "Right trigger shield" }) };
   for (const select of Object.values(triggerSelects)) {
     select.append(h("option", { value: "full" }, "Full"), h("option", { value: "light" }, "Light"));
@@ -63,7 +63,7 @@ function mappingCard(pad: ReturnType<typeof padView>, api: Api) {
       presetSelect.disabled = false;
     }
   });
-  const label = (bindings: Bindings) => pad.label(bindings.smashcraft, bindings.smashcraft_menus);
+  const label = (bindings: Bindings) => pad.label(bindings.makgora, bindings.makgora_menus);
   let currentSettings: ControllerSettings | undefined;
   const renderSettings = (settings: ControllerSettings) => {
     currentSettings = settings;
@@ -89,7 +89,7 @@ function mappingCard(pad: ReturnType<typeof padView>, api: Api) {
       h("div.shields", {}, h("label", {}, "LT ", triggerSelects.left), h("label", {}, "RT ", triggerSelects.right))),
     h("label.setting", {}, h("span", {}, "Right stick"), rightStick),
   );
-  const el = h("section.card.mapping-card", {}, h("h2", {}, "Smashcraft buttons"), h("div.pad-layout", {}, pad.el, settings));
+  const el = h("section.card.mapping-card", {}, h("h2", {}, "Mak'gora buttons"), h("div.pad-layout", {}, pad.el, settings));
   return { el, renderSettings, load };
 }
 
@@ -108,7 +108,7 @@ function settingsCard(api: Api) {
     "section.card.settings",
     {},
     h("h2", {}, "App"),
-    h("label.switch", {}, toggle, h("span", {}, "Start with my computer"), h("small", {}, "Smashcraft waits in the tray, ready for your controller.")),
+    h("label.switch", {}, toggle, h("span", {}, "Start with my computer"), h("small", {}, "Mak'gora waits in the tray, ready for your controller.")),
   );
 }
 

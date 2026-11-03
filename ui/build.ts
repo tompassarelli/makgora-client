@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 const here = import.meta.dir;
 const kit = join(here, "kit");
-if (!existsSync(join(kit, "kit.json"))) throw new Error("no Smashcraft client kit in ui/kit: run bun ../scripts/kit.ts");
+if (!existsSync(join(kit, "kit.json"))) throw new Error("no Mak'gora client kit in ui/kit: run bun ../scripts/kit.ts");
 const dist = join(here, "dist");
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist);

@@ -43,7 +43,7 @@ export function simulations(api: MapWatchApi, pageUrl: string): Simulations {
 
 let viewerLua: Promise<string> | undefined;
 
-/** The replay played in its version's own map, in the app (smashcraft-client:src-tauri/src/mapsim.rs). */
+/** The replay played in its version's own map, in the app (makgora-client:src-tauri/src/mapsim.rs). */
 export async function mapWatch(api: MapWatchApi, pageUrl: string, version: string, lines: readonly string[]): Promise<Watch | string | undefined> {
   const viewer = await (viewerLua ??= fetch(new URL("./viewer.lua", pageUrl).href).then((response) => response.text()));
   let answer: MapReplayOpened;

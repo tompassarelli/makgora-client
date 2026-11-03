@@ -54,8 +54,8 @@ pub struct PadPresetBindings {
 
 #[derive(Serialize)]
 pub struct Bindings {
-    smashcraft: Vec<Binding>,
-    smashcraft_menus: Vec<Binding>,
+    makgora: Vec<Binding>,
+    makgora_menus: Vec<Binding>,
     profile: ProfileChoice,
     pad_preset: PadPreset,
     tap_jump: bool,
@@ -69,8 +69,8 @@ pub fn bindings(state: State<AppState>) -> Bindings {
     let settings = state.settings.lock().unwrap();
     let controller = state.link.snapshot.lock().unwrap().settings.clone();
     Bindings {
-        smashcraft: controller.bindings(PadKind::default()),
-        smashcraft_menus: padbridge_model::menu_pointer_bindings(),
+        makgora: controller.bindings(PadKind::default()),
+        makgora_menus: padbridge_model::menu_pointer_bindings(),
         profile: settings.profile,
         pad_preset: controller.pad_preset,
         tap_jump: controller.tap_jump,

@@ -1,4 +1,4 @@
-// Match records the map writes (smashcraft:docs/design/client.md, "Match
+// Match records the map writes (makgora:docs/design/client.md, "Match
 // records") and the client's history store they are ingested into.
 
 /** A record file as the app reads it from a CustomMapData folder. */

@@ -16,7 +16,7 @@ export function playButton(api: Api): HTMLElement {
   const render = (state: PlayState) => {
     button.disabled = !state.available || state.running;
     button.textContent = state.running ? "Starting…" : "Play";
-    button.title = state.available ? "Start Warcraft III on the current Smashcraft map" : "Put a Smashcraft map in Warcraft III's Maps/00-Smashcraft folder first.";
+    button.title = state.available ? "Start Warcraft III on the current Mak'gora map" : "Put a Mak'gora map in Warcraft III's Maps/00-Smashcraft folder first.";
     if (state.lines.length || state.running) panel.hidden = false;
     steps.replaceChildren(...state.lines.map((line) => h("li", {}, line)));
     panel.classList.toggle("failed", state.finished === false);

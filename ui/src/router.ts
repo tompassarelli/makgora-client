@@ -23,7 +23,7 @@ export function startRouter(routes: Route[], outlet: HTMLElement, nav: HTMLEleme
     cleanup?.();
     outlet.replaceChildren();
     links.forEach((a, i) => a.classList.toggle("active", routes[i] === route));
-    document.title = `Smashcraft · ${route.title}`;
+    document.title = `Mak'gora · ${route.title}`;
     cleanup = route.page(outlet);
   };
   window.addEventListener("hashchange", show);

@@ -43,8 +43,8 @@ jobs:
           fi
           printf '%s\n' "$files"
           match() { grep -qE "$1" <<<"$files" && echo true || echo false; }
-          echo "ui=$(match '^(ui/|scripts/|smashcraft\.ref$|\.github/)')" >> "$GITHUB_OUTPUT"
-          echo "rust=$(match '^(src-tauri/|smashcraft\.ref$|\.github/)')" >> "$GITHUB_OUTPUT"
+          echo "ui=$(match '^(ui/|scripts/|makgora\.ref$|\.github/)')" >> "$GITHUB_OUTPUT"
+          echo "rust=$(match '^(src-tauri/|makgora\.ref$|\.github/)')" >> "$GITHUB_OUTPUT"
 
   ui:
     needs: changes
@@ -63,7 +63,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.13
-      - name: Smashcraft client kit (smashcraft.ref)
+      - name: Mak'gora client kit (makgora.ref)
         run: bun scripts/kit.ts
       - name: Pages
         working-directory: ui
@@ -77,10 +77,10 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            asset: smashcraft-client-linux-x86_64
+            asset: makgora-client-linux-x86_64
             service: padbridge-linux-x86_64.tar.gz
           - os: windows-latest
-            asset: smashcraft-client-windows-x86_64
+            asset: makgora-client-windows-x86_64
             service: padbridge-windows-x86_64.zip
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
@@ -95,7 +95,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.13
-      - name: Smashcraft client kit (smashcraft.ref)
+      - name: Mak'gora client kit (makgora.ref)
         run: bun scripts/kit.ts
       - name: Pages for the window
         working-directory: ui
@@ -128,8 +128,8 @@ jobs:
           if [ "$RUNNER_OS" = Windows ]; then 7z x -bd ${{ matrix.service }} >/dev/null; else tar xzf ${{ matrix.service }}; fi
           cd ..
           cp service/padbridge-*/padbridge* dist/${{ matrix.asset }}/
-          cp src-tauri/target/release/smashcraft${{ runner.os == 'Windows' && '.exe' || '' }} src-tauri/icons/icon.png LICENSE README.md dist/${{ matrix.asset }}/
-          echo "smashcraft-client ${GITHUB_SHA::12}, padbridge $tag, Smashcraft $(cat smashcraft.ref | cut -c1-12) (kit version $(sed -n 's/.*"version": "\(.*\)".*/\1/p' ui/kit/kit.json))" > dist/${{ matrix.asset }}/VERSION
+          cp src-tauri/target/release/makgora${{ runner.os == 'Windows' && '.exe' || '' }} src-tauri/icons/icon.png LICENSE README.md dist/${{ matrix.asset }}/
+          echo "makgora-client ${GITHUB_SHA::12}, padbridge $tag, Mak'gora $(cat makgora.ref | cut -c1-12) (kit version $(sed -n 's/.*"version": "\(.*\)".*/\1/p' ui/kit/kit.json))" > dist/${{ matrix.asset }}/VERSION
           cd dist && if [ "$RUNNER_OS" = Windows ]; then 7z a -bd ${{ matrix.asset }}.zip ${{ matrix.asset }} >/dev/null; else tar czf ${{ matrix.asset }}.tar.gz ${{ matrix.asset }}; fi
       - uses: actions/upload-artifact@v4
         with:
@@ -141,7 +141,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes "Linux and Windows builds of the Smashcraft client $GITHUB_REF_NAME, with the padbridge service." || true
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes "Linux and Windows builds of the Mak'gora client $GITHUB_REF_NAME, with the padbridge service." || true
           gh release upload "$GITHUB_REF_NAME" dist/${{ matrix.asset }}.* --clobber
 
   # Game files, copied game scripts, memory access and address tables in the tracked tree (wisp:docs/clean-room.md, "The check").

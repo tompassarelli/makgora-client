@@ -1,5 +1,5 @@
-// The app's answers below are mapsim.rs's own: `{"first":0,"last":700,"frame":0}` from smashcraft_open and
-// `{frame, ended, scene}` from smashcraft_advance (smashcraft-client:src-tauri/src/mapsim.rs tests).
+// The app's answers below are mapsim.rs's own: `{"first":0,"last":700,"frame":0}` from makgora_open and
+// `{frame, ended, scene}` from makgora_advance (makgora-client:src-tauri/src/mapsim.rs tests).
 import { expect, test } from "bun:test";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";

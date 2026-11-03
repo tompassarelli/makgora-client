@@ -1,4 +1,4 @@
-//! The client's `sims` folder: the war3map.lua of each Smashcraft version it has
+//! The client's `sims` folder: the war3map.lua of each Mak'gora version it has
 //! played (`<version>.lua`, from MapSims) and each version's viewer simulation
 //! (`<version>.js`, from SharedReplays). This module is the only place that
 //! names the folder.

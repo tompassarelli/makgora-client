@@ -1,4 +1,4 @@
-//! The Smashcraft client: a window with routed pages (Controller, History,
+//! The Mak'gora client: a window with routed pages (Controller, History,
 //! Stats, Replays and Online) and a tray light. Controller support comes
 //! from the Warcraft III Controller service over its local interface; the
 //! client starts the bundled service only when none answers.
@@ -43,5 +43,5 @@ pub fn run() {
         .on_window_event(app::hide_on_close)
         .invoke_handler(commands::handler())
         .run(tauri::generate_context!())
-        .expect("Smashcraft failed to start");
+        .expect("Mak'gora failed to start");
 }

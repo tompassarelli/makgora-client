@@ -1,4 +1,4 @@
-//! Play: gets the player from the Play button to a match, by the route their system has (smashcraft:docs/client-interface.md, "Maps").
+//! Play: gets the player from the Play button to a match, by the route their system has (makgora:docs/client-interface.md, "Maps").
 
 use serde::Serialize;
 use std::ffi::OsString;
@@ -50,7 +50,7 @@ pub const IN_MATCH: &str = "You're in a match: switch to the Warcraft III window
 const COULDNT_START: &str = "Play couldn't start Warcraft III.";
 fn shortcut_next() -> String {
     format!(
-        "Battle.net is starting. Sign in, start Warcraft III from it and press Play again. To have Play host the match too, set {} to the ts folder of a Smashcraft checkout.",
+        "Battle.net is starting. Sign in, start Warcraft III from it and press Play again. To have Play host the match too, set {} to the ts folder of a Mak'gora checkout.",
         crate::env::TOOLS_VARIABLE
     )
 }
@@ -76,7 +76,7 @@ pub fn launch_for(map: &Path, program: Option<OsString>, windows: bool) -> Optio
     Some(Launch { program: exe.into_os_string(), args: args(map.into()) })
 }
 
-/// `bun wisp play` in Smashcraft's tools, which handles Battle.net, the doctor checks and hosting.
+/// `bun wisp play` in Mak'gora's tools, which handles Battle.net, the doctor checks and hosting.
 #[derive(Debug, PartialEq)]
 pub struct Run {
     pub program: OsString,
@@ -90,7 +90,7 @@ pub enum Route {
     InMatch,
     Direct(Launch),
     Wisp(Run),
-    /// Linux without Smashcraft's tools: Steam's Battle.net shortcut.
+    /// Linux without Mak'gora's tools: Steam's Battle.net shortcut.
     Shortcut,
     NotFound,
 }
@@ -146,7 +146,7 @@ impl Play {
     }
 
     pub fn start(self: &Arc<Self>, maps_folders: &[PathBuf], env: &Env, in_match: bool, changed: impl Fn(PlayState) + Send + Sync + 'static) -> Result<(), String> {
-        let map = current_map(maps_folders).ok_or("No Smashcraft map is in Warcraft III's Maps/00-Smashcraft folder yet.")?;
+        let map = current_map(maps_folders).ok_or("No Mak'gora map is in Warcraft III's Maps/00-Smashcraft folder yet.")?;
         let route = route_for(&map, &Setup::from_env(env, in_match));
         self.go(&map, route, env, crate::launch::window::raise_warcraft, Arc::new(changed))
     }
@@ -261,7 +261,7 @@ mod tests {
     use super::*;
 
     fn tmp(name: &str) -> PathBuf {
-        let dir = std::env::temp_dir().join(format!("smashcraft-play-{name}-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("makgora-play-{name}-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         dir
     }

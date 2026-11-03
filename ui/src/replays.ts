@@ -1,8 +1,8 @@
-// Replays the map writes (smashcraft:docs/design/client.md, "Full-match
+// Replays the map writes (makgora:docs/design/client.md, "Full-match
 // replays"): listing them beside their match records, joining a manifest's
 // parts into one replay, and opening one in the simulation of the version
 // that recorded it. Each version's simulation is its own bundle
-// (the client kit's sim.js, VIEWER_API 1; smashcraft:docs/client-interface.md):
+// (the client kit's sim.js, VIEWER_API 1; makgora:docs/client-interface.md):
 // the client ships its own and keeps every one it has played.
 import { type ReplayHeader, joinReplay, parseReplayHeader, parseReplayPart } from "../kit/sim.js";
 import type { ReplayScene, ReplayViewer } from "../kit/sim.js";
@@ -84,8 +84,8 @@ export function joinedReplay(text: string, parts: readonly string[]): string[] |
 /** A file name to keep a joined replay under, from its build and serial. */
 export const keptName = (lines: readonly string[]): string => {
   const header = parseReplayHeader(lines);
-  if (typeof header === "string") return `smashcraft-replay-${Date.now()}.txt`;
-  return `smashcraft-${header.repro.build}-replay-${header.serial}-${header.version}.txt`.replace(/[^A-Za-z0-9._-]/g, "-");
+  if (typeof header === "string") return `makgora-replay-${Date.now()}.txt`;
+  return `makgora-${header.repro.build}-replay-${header.serial}-${header.version}.txt`.replace(/[^A-Za-z0-9._-]/g, "-");
 };
 
 /** What a version's simulation bundle offers (VIEWER_API 1). */
@@ -98,7 +98,7 @@ export type Simulation = {
 /**
  * A replay being watched: the frame shown and its scene, a run of frames
  * forward and a seek. Async, as a replay may play in its map's simulation in
- * the app (smashcraft-client:src-tauri/src/mapsim.rs).
+ * the app (makgora-client:src-tauri/src/mapsim.rs).
  */
 export interface Watch {
   readonly first: number;
@@ -146,17 +146,17 @@ export type Simulations = {
 
 export type Opened = { watch: Watch } | { problem: string };
 
-/** The app's answers about a replay open in a version's map (smashcraft-client:src-tauri/src/commands/replays.rs). */
+/** The app's answers about a replay open in a version's map (makgora-client:src-tauri/src/commands/replays.rs). */
 export type MapReplayOpened = { id: number; opened: { first: number; last: number; frame: number } | { problem: string } };
 export type MapReplayStepped = { frame: number; ended: boolean; scene: ReplayScene } | { problem: string };
 
 /** The words naming a version a player can tell apart. */
-export const versionName = (version: string, build: string) => `Smashcraft ${build} (version ${version})`;
+export const versionName = (version: string, build: string) => `Mak'gora ${build} (version ${version})`;
 
 /** A joined replay opened in the simulation of the version that recorded it, or why it can't be. */
 export async function openForWatching(lines: readonly string[], simulations: Simulations): Promise<Opened> {
   const header = parseReplayHeader(lines);
-  if (typeof header === "string") return { problem: `This file isn't a Smashcraft replay (${header}).` };
+  if (typeof header === "string") return { problem: `This file isn't a Mak'gora replay (${header}).` };
   const own = await simulations.own();
   const simulation = own.sourceVersion() === header.version ? own : await simulations.kept(header.version);
   if (simulation !== undefined) {
@@ -183,7 +183,7 @@ export const warcraftGameOf = (entry: ReplayEntry, games: readonly WarcraftGame[
 export function warcraftName(ended: number): string {
   const at = new Date(ended);
   const two = (n: number) => String(n).padStart(2, "0");
-  return `Smashcraft ${at.getFullYear()}-${two(at.getMonth() + 1)}-${two(at.getDate())} ${two(at.getHours())}.${two(at.getMinutes())}`;
+  return `Makgora ${at.getFullYear()}-${two(at.getMonth() + 1)}-${two(at.getDate())} ${two(at.getHours())}.${two(at.getMinutes())}`;
 }
 
 export const SLOTS = ["P1", "P2", "P3", "P4"];

@@ -2,7 +2,7 @@
 # run time). scripts/install.ts builds this with an out-link so they stay alive.
 { pkgs ? import <nixpkgs> { } }:
 pkgs.buildEnv {
-  name = "smashcraft-client-runtime";
+  name = "makgora-client-runtime";
   paths = with pkgs; [
     webkitgtk_4_1
     gtk3

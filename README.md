@@ -1,11 +1,11 @@
-# Smashcraft client
+# Mak'gora client
 
-Smashcraft is played inside Warcraft III, which has no controller support, no
+Mak'gora is played inside Warcraft III, which has no controller support, no
 match history and no way to review a game. The client adds them from outside
-the game, reading only what Smashcraft publishes for it.
+the game, reading only what Mak'gora publishes for it.
 
 The desktop app players install beside Warcraft III to play
-[Smashcraft](https://github.com/tompassarelli/smashcraft): a window with
+[Mak'gora](https://github.com/tompassarelli/makgora): a window with
 routed pages (Controller, History, Stats, Replays and Online; more slot into
 `ROUTES` in ui/src/main.ts) and a tray light. Rust backend in src-tauri
 (Tauri v2), pages in TypeScript built with Bun in ui, embedded into the binary
@@ -13,10 +13,10 @@ at build time. MIT licensed.
 
 ## Principles
 
-The Smashcraft client is an independent fan project, not affiliated with or
+The Mak'gora client is an independent fan project, not affiliated with or
 endorsed by Blizzard Entertainment or Nintendo. It is written entirely from
 scratch and works alongside a copy of Warcraft III you own; it never replaces
-or redistributes the game. Smashcraft takes its feel from Super Smash Bros.
+or redistributes the game. Mak'gora takes its feel from Super Smash Bros.
 Melee, and the same principles cover both.
 
 - **Respect copyright and publisher IP.** Nothing of Blizzard's or Nintendo's
@@ -33,8 +33,8 @@ Melee, and the same principles cover both.
 - **Hands off a running game.** The client never turns on Warcraft III's LAN
   connection, writes into a running game or drives Warcraft III to host or join
   online games. Online play in Warcraft III itself is Battle.net's, inside
-  Warcraft; Smashcraft's online play is its own window over Wisp's relay,
-  with Warcraft III closed (smashcraft-client#28, 2026-10-31).
+  Warcraft; Mak'gora's online play is its own window over Wisp's relay,
+  with Warcraft III closed (makgora-client#28, 2026-10-31).
 - **Original work.** Our own code only. No code from AGPL projects such as
   Warsmash, and "Warcraft" stays out of our product names.
 
@@ -44,36 +44,36 @@ is Wisp's [clean-room rules](https://github.com/tompassarelli/wisp/blob/main/doc
 ## Install
 
 Download the release for your system from
-[Releases](https://github.com/tompassarelli/smashcraft-client/releases) and
-unpack it anywhere. It holds `smashcraft` (`smashcraft.exe`), the
+[Releases](https://github.com/tompassarelli/makgora-client/releases) and
+unpack it anywhere. It holds `makgora` (`makgora.exe`), the
 [padbridge](https://github.com/tompassarelli/padbridge) service
 beside it, and `VERSION` naming the commits it was built from. Run
-`smashcraft`. On Linux the app needs WebKitGTK 4.1 and libayatana-appindicator
+`makgora`. On Linux the app needs WebKitGTK 4.1 and libayatana-appindicator
 (`libwebkit2gtk-4.1-0 libayatana-appindicator3-1` on Debian and Ubuntu).
 
-Put a Smashcraft map, `Smashcraft 0.0.N.w3x`, in Warcraft III's
-`Maps/00-Smashcraft` folder. Play starts it. `smashcraft --check` prints,
+Put a Mak'gora map, `Smashcraft 0.0.N.w3x`, in Warcraft III's
+`Maps/00-Smashcraft` folder. Play starts it. `makgora --check` prints,
 without opening a window, what the controller service reports (its pad), the
 bundled service it would start, and the map and command Play would run.
 
-## What it reads from Smashcraft
+## What it reads from Mak'gora
 
-Only Smashcraft's [client interface](https://github.com/tompassarelli/smashcraft/blob/main/docs/client-interface.md):
+Only Mak'gora's [client interface](https://github.com/tompassarelli/makgora/blob/main/docs/client-interface.md):
 
-- at build time, client kit 1, written by the Smashcraft commit in
-  `smashcraft.ref` (`bun scripts/kit.ts` fetches that commit's ts/ into
-  .smashcraft/ and writes ui/kit/; `SMASHCRAFT_KIT=DIR` uses a kit you already
+- at build time, client kit 1, written by the Mak'gora commit in
+  `makgora.ref` (`bun scripts/kit.ts` fetches that commit's ts/ into
+  .makgora/ and writes ui/kit/; `MAKGORA_KIT=DIR` uses a kit you already
   have): the Replays page's simulation `sim.js`, its types, `viewer.lua` and
   the recorded fixtures the replay tests play (AGENTS.md);
 - at run time, the match records and replays the map writes into
   CustomMapData, and the maps in Warcraft III's Maps folders;
-- for Online only, Smashcraft's tools (`SMASHCRAFT_TS`).
+- for Online only, Mak'gora's tools (`MAKGORA_TS`).
 
-To move to a newer Smashcraft, put its commit in `smashcraft.ref`.
+To move to a newer Mak'gora, put its commit in `makgora.ref`.
 
 ## Play
 
-Play needs a Smashcraft map in `Maps/00-Smashcraft` beside the History
+Play needs a Mak'gora map in `Maps/00-Smashcraft` beside the History
 page's folders (src-tauri/src/play.rs), and picks its route by system:
 
 - Warcraft III already in a match (the controller status says so): Play
@@ -82,7 +82,7 @@ page's folders (src-tauri/src/play.rs), and picks its route by system:
 - `WARCRAFT_III` set: that program (such as a launch script) is run with
   Warcraft's own `-launch -loadfile MAP`; on Windows without it, the default
   install under Program Files is.
-- Linux with `SMASHCRAFT_TS` set: `bun wisp play` in Smashcraft's tools, which
+- Linux with `MAKGORA_TS` set: `bun wisp play` in Mak'gora's tools, which
   starts Battle.net through the Steam shortcut "Warcraft III (Battle.net)",
   runs the doctor checks and hosts the map through the menus. The panel lists
   each step line it prints, and its error output and exit status when it
@@ -92,10 +92,10 @@ page's folders (src-tauri/src/play.rs), and picks its route by system:
 
 ## Controller support
 
-Controller support is optional: Smashcraft plays on the keyboard alone, and
+Controller support is optional: Mak'gora plays on the keyboard alone, and
 the service turns a pad into the same keys. The client never reads the pad itself. It connects to the Warcraft III
 Controller service ([padbridge](https://github.com/tompassarelli/padbridge),
-with Smashcraft's plug-in from smashcraft:controller) on 127.0.0.1:47631 and
+with Mak'gora's plug-in from makgora:controller) on 127.0.0.1:47631 and
 shows its status, live input and bindings; the messages and plain-language
 status rows come from padbridge's model crate (padbridge-model), pinned by tag in
 src-tauri/Cargo.toml. When nothing answers and the player has
@@ -103,14 +103,14 @@ turned controller support on (remembered in the client's settings), it starts
 the bundled service with `--service --plugin wc3-journal`:
 `WC3_CONTROLLER_SERVICE`, else `padbridge` beside the client, else on the
 `PATH`; the plug-in is `wc3-journal` beside the client, else the one
-Smashcraft's `bun wisp controller` installs; without one the service runs on
+Mak'gora's `bun wisp controller` installs; without one the service runs on
 Any map. Releases bundle the service, not the plug-in. A started service gets 10 s
 to answer, three starts in a row, then the page says it couldn't start. The
 service is single-instance, so a client never starts a second copy beside a
 running one. `WC3_CONTROLLER_PORT` points the client at a test service.
 
 Closing the window hides it to the tray; the tray's light is the overall
-status and its menu opens the window or quits. Opening Smashcraft again while it
+status and its menu opens the window or quits. Opening Mak'gora again while it
 runs shows the running window (the first client holds 127.0.0.1:47632). "Start with my computer"
 starts the client hidden in the tray at login (Linux: an XDG autostart entry
 naming the installed launcher; Windows: the autostart plugin).
@@ -118,7 +118,7 @@ naming the installed launcher; Windows: the autostart plugin).
 ## Match history and stats
 
 The map writes a record of every finished match into the player's
-CustomMapData (smashcraft:docs/design/client.md, "Match records"). The History
+CustomMapData (makgora:docs/design/client.md, "Match records"). The History
 page reads each configured folder (until the player sets them, every
 Warcraft III CustomMapData found: under Documents, and on Linux in each
 Steam/Proton prefix, ~/.wine and `WINEPREFIX`; remembered in the client's settings),
@@ -135,14 +135,14 @@ records tests replay (AGENTS.md).
 
 ## Online
 
-The Online page offers one way to play online, Smashcraft's own window over
+The Online page offers one way to play online, Mak'gora's own window over
 Wisp's relay; it never starts or touches Warcraft III. Host runs `bun wisp play
---standalone --host --relay nearest` in Smashcraft's tools (`SMASHCRAFT_TS`, a
-Smashcraft checkout's ts/ with its dependencies installed), which pings the
+--standalone --host --relay nearest` in Mak'gora's tools (`MAKGORA_TS`, a
+Mak'gora checkout's ts/ with its dependencies installed), which pings the
 relay regions, opens a room on the nearest and shows its code and region on the page; Join runs
 `bun wisp play --standalone --join CODE` with the code the host gave. Both
 play in Wisp's own window, without Warcraft III (wisp:docs/play.md, "Host and
-join"; smashcraft:docs/commands/online.md). The run's output lines and the
+join"; makgora:docs/commands/online.md). The run's output lines and the
 round trip to the relay show on the page; its other error output goes to
 `standalone.log` in the client's log folder. Cancel ends the run and its
 window. `WISP_RELAYS="name=ADDRESS:PORT"` adds a relay region, which a run
@@ -153,7 +153,7 @@ src-tauri/src/online.rs and the page ui/src/pages/online.ts.
 
 Every client records each match as a replay in its CustomMapData folder: a
 manifest, `smashcraft-replay-N.txt`, with its parts beside it
-(smashcraft:docs/design/client.md, "Full-match replays"). The Replays page
+(makgora:docs/design/client.md, "Full-match replays"). The Replays page
 lists the replays in the History page's folders, each beside the record of the
 same match, and the replays the client keeps in `replays/` in its data
 folder. "Save a copy to share" joins one into a single file there; "Open a
@@ -167,13 +167,13 @@ stamped with its source version, and the client keeps a copy in `sims/` for
 every version it runs.
 
 For any other version the client looks in the Maps folder beside each
-CustomMapData folder (Download included) for a Smashcraft map stamped with
+CustomMapData folder (Download included) for a Mak'gora map stamped with
 it. It reads that map's `war3map.lua` (src-tauri/src/mpq.rs),
 keeps it as `sims/<version>.lua`, and plays the replay in the map's own
 simulation: Lua 5.3.6 built with 32-bit numbers, as Warcraft's
 (src-tauri/lua-5.3.6), with `viewer.lua`'s modules added
 (src-tauri/src/mapsim.rs and mapsim.lua;
-smashcraft:ts/src/game/replay/viewerDriver.ts). A replay whose version has
+makgora:ts/src/game/replay/viewerDriver.ts). A replay whose version has
 neither names it and asks for its map. Joining and opening are in ui/src/replays.ts
 and ui/src/playback.ts. The Rust side
 (src-tauri/src/replays.rs) only reads and keeps files.
@@ -187,7 +187,7 @@ it keeps a copy in `warcraft-replays/` in its data folder, named
 records it holds. The same content is kept once. Each match's row on the
 Replays page then offers "Watch in Warcraft": it copies the game's replay
 back into the Warcraft `Replays` folder it came from as
-`Smashcraft <date> <time>.w3g` and tells the player to open it from
+`Mak'gora <date> <time>.w3g` and tells the player to open it from
 Warcraft III's Replays menu. A Warcraft replay covers the whole game, every
 rematch included (src-tauri/src/warcraft_replays.rs).
 
@@ -196,7 +196,7 @@ rematch included (src-tauri/src/warcraft_replays.rs).
 Tests follow AGENTS.md: every permanent test is one of its five kinds.
 
 ```sh
-bun scripts/kit.ts       # ui/kit/ from the Smashcraft commit in smashcraft.ref
+bun scripts/kit.ts       # ui/kit/ from the Mak'gora commit in makgora.ref
 cd ui && bun install && bun test && bun test ../scripts && bun run check && bun run build
 cd ../src-tauri && nix-shell ../shell.nix --run 'cargo test --jobs 2'
 # Install for this user (NixOS): build, keep its libraries alive, write the
@@ -211,10 +211,10 @@ goes first on `PATH` even for a cargo already there, so north's cargo shim finds
 the real cargo. Outside nix-shell it builds inside shell.nix.
 For `cargo test`, put rustup's 1.96.1 toolchain on `PATH` first
 (`$HOME/.rustup/toolchains/1.96.1-x86_64-unknown-linux-gnu/bin`). The install
-lives in ~/.local/share/smashcraft-build-inputs/smashcraft-client (one folder
-per commit, `current`, the `smashcraft` launcher and a `runtime` out-link), never
-in the system configuration; its launcher sets `SMASHCRAFT_TS` to
-~/code/smashcraft/main/ts when that exists.
+lives in ~/.local/share/makgora-build-inputs/makgora-client (one folder
+per commit, `current`, the `makgora` launcher and a `runtime` out-link), never
+in the system configuration; its launcher sets `MAKGORA_TS` to
+~/code/makgora/main/ts when that exists.
 
 The clean-room check (clean-room/, the rules of wisp:docs/clean-room.md "The check") refuses game-format files, copied game scripts, memory access and address tables in the tracked tree, unless clean-room-allowlist.tsv lists the path as `original` or `generated` with how it was made. Enable it once per clone with `git config core.hooksPath .githooks`; it then runs before every push, and in CI.
 

@@ -62,7 +62,7 @@ function foldersCard(api: Api, onChange: () => void): { el: HTMLElement; load: (
     h("h2", {}, "Where your matches are saved"),
     list,
     form,
-    h("p.note", {}, "Smashcraft saves every finished match in Warcraft III's CustomMapData folder. Add each one you play from."),
+    h("p.note", {}, "Mak'gora saves every finished match in Warcraft III's CustomMapData folder. Add each one you play from."),
   );
   return {
     el,
